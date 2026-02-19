@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CrowdSenseNet</string>
+
+    <!-- Splash Screen -->
+    <string name="app_subtitle">Crowdsensed Drive Test Mobile\nApplication for Coverage Prediction</string>
+    <string name="initializing_system">INITIALIZING SYSTEM</string>
+    <string name="engineering_research_lab">ENGINEERING RESEARCH LAB</string>
+
+    <!-- Navigation -->
+    <string name="dashboard">Dashboard</string>
+    <string name="metrics">Metrics</string>
+    <string name="uploads">Uploads</string>
+    <string name="settings">Settings</string>
+
+    <!-- Dashboard -->
+    <string name="start">START</string>
+    <string name="ready_to_begin">Ready to begin drive testing</string>
+    <string name="system_state">SYSTEM STATE</string>
+    <string name="sensing_status">Sensing Status:</string>
+    <string name="off">OFF</string>
+    <string name="network_mode_label">NETWORK MODE</string>
+    <string name="network_mode_value">LTE / 5G SA</string>
+    <string name="excellent">Excellent</string>
+    <string name="positioning">POSITIONING</string>
+    <string name="gps_active">GPS: Active</string>
+    <string name="live_coverage_map">LIVE COVERAGE MAP</string>
+
+    <!-- Metrics Screen -->
+    <string name="radio_signal">Radio Signal</string>
+    <string name="network_node">Network Node</string>
+    <string name="gps_coordinates">GPS Coordinates</string>
+
+    <!-- Uploads Screen -->
+    <string name="pending">PENDING</string>
+    <string name="uploaded">UPLOADED</string>
+    <string name="upload_now">Upload Now</string>
+    <string name="sync_activity">SYNC ACTIVITY</string>
+
+    <!-- Settings Screen -->
+    <string name="data_collection">DATA COLLECTION</string>
+    <string name="sampling_interval">Sampling Interval</string>
+    <string name="enable_background_logging">Enable Background Logging</string>
+    <string name="backend_configuration">BACKEND CONFIGURATION</string>
+    <string name="server_url">Server URL</string>
+    <string name="test_connection">Test Connection</string>
+    <string name="permissions">PERMISSIONS</string>
+    <string name="location_services">Location Services</string>
+    <string name="phone_state">Phone State</string>
+
+    <!-- Drawer Menu -->
+    <string name="system_ready">V2.4.0 • SYSTEM READY</string>
+    <string name="analysis_data">ANALYSIS &amp; DATA</string>
+    <string name="live_map_view">Live Map View</string>
+    <string name="export_data_csv">Export Data (CSV)</string>
+    <string name="view_map_history">View Map History</string>
+    <string name="engineering_tools">ENGINEERING TOOLS</string>
+    <string name="internal_logs">Internal Logs</string>
+    <string name="coverage_settings">Coverage Settings</string>
+    <string name="documentation">DOCUMENTATION</string>
+    <string name="user_guide">User Guide</string>
+    <string name="licenses">Licenses</string>
+</resources>

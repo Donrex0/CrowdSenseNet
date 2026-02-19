@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/analysis_data">
+        <menu>
+            <item
+                android:id="@+id/nav_live_map"
+                android:icon="@drawable/ic_location_on"
+                android:title="@string/live_map_view" />
+            <item
+                android:id="@+id/nav_export"
+                android:icon="@drawable/ic_uploads"
+                android:title="@string/export_data_csv" />
+            <item
+                android:id="@+id/nav_history"
+                android:icon="@drawable/ic_history"
+                android:title="@string/view_map_history" />
+        </menu>
+    </item>
+
+    <item android:title="@string/engineering_tools">
+        <menu>
+            <item
+                android:id="@+id/nav_logs"
+                android:icon="@drawable/ic_dashboard"
+                android:title="@string/internal_logs" />
+            <item
+                android:id="@+id/nav_coverage_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/coverage_settings" />
+        </menu>
+    </item>
+
+    <item android:title="@string/documentation">
+        <menu>
+            <item
+                android:id="@+id/nav_user_guide"
+                android:icon="@drawable/ic_launcher_foreground"
+                android:title="@string/user_guide" />
+            <item
+                android:id="@+id/nav_licenses"
+                android:icon="@drawable/ic_check_circle_green"
+                android:title="@string/licenses" />
+        </menu>
+    </item>
+
+</menu>
