@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/data_collection"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp"
             android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
                         android:drawablePadding="4dp"
                         android:rotation="270"
                         android:text="10s"
-                        android:textColor="@color/text_gray"
+                        android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
                 </RelativeLayout>
 
@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:checked="true"
-                        app:thumbTint="@color/green"
+                        app:thumbTint="@color/accent_green_dark"
                         app:trackTint="#C8E6C9" />
                 </RelativeLayout>
             </LinearLayout>
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/backend_configuration"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp"
             android:textStyle="bold" />
 
@@ -115,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/server_url"
-                    android:textColor="@color/text_gray"
+                    android:textColor="@color/text_secondary"
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
@@ -135,7 +135,7 @@
                     android:backgroundTint="#2196F3"
                     android:text="@string/test_connection"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/on_primary"
                     android:textStyle="bold"
                     app:cornerRadius="8dp" />
 
@@ -157,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:text="Connection active"
-                        android:textColor="@color/green"
+                        android:textColor="@color/accent_green"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -170,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/permissions"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp"
             android:textStyle="bold" />
 
@@ -260,7 +260,7 @@
             android:layout_marginTop="16dp"
             android:padding="8dp"
             android:text="Drive testing requires persistent access to location and radio hardware states."
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp" />
 
         <TextView
@@ -270,7 +270,7 @@
             android:layout_marginBottom="32dp"
             android:gravity="center"
             android:text="DriveTest Pro\nVersion 1.0.0 (build 2405)"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp" />
 
     </LinearLayout>

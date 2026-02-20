@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
+    android:background="?android:colorBackground"
     tools:context=".MainActivity">
 
     <!-- Logo in rounded square -->
@@ -12,6 +13,7 @@
         android:id="@+id/logo_card"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        app:cardBackgroundColor="@color/card_light"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toTopOf="@+id/app_title"
@@ -24,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="20dp"
-            android:src="@drawable/ic_app_logo" />
+            android:src="@drawable/hub" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -33,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="@string/app_name"
-        android:textColor="#1B212E"
+        android:textColor="@color/primary_color"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/app_subtitle"
@@ -46,11 +48,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/app_subtitle"
-        android:textAlignment="center"
-        android:textColor="#7A869A"
-        android:textSize="14sp"
         android:lineSpacingExtra="4dp"
+        android:text="@string/splash_subtitle"
+        android:textAlignment="center"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/progress_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,11 +73,11 @@
             android:id="@+id/initializing_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
             android:text="@string/initializing_system"
-            android:textColor="#7A869A"
+            android:textColor="@color/text_secondary"
             android:textSize="10sp"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="64%"
-            android:textColor="#1B212E"
+            android:textColor="@color/text_primary"
             android:textSize="10sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,8 +99,8 @@
             android:layout_height="4dp"
             android:layout_marginTop="8dp"
             android:progress="64"
-            android:progressTint="#1B212E"
-            android:progressBackgroundTint="#E9EDF1"
+            android:progressBackgroundTint="@color/background_light"
+            android:progressTint="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/initializing_label" />
@@ -107,10 +109,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/engineering_research_lab"
-            android:textColor="#7A869A"
-            android:textSize="9sp"
             android:letterSpacing="0.15"
+            android:text="@string/engineering_research_lab"
+            android:textColor="@color/text_secondary"
+            android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/splash_progress" />
@@ -120,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:text=". . ."
-            android:textColor="#7A869A"
+            android:textColor="@color/text_secondary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

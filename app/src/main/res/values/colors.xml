@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Primary Brand Colors -->
+    <color name="primary_color">#1E2A38</color>
+    <color name="primary_variant">#16202B</color>
+    <color name="secondary_color">#1867E2</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="light_gray">#D3D3D3</color>
+
+    <!-- Accent Colors -->
+    <color name="accent_green">#2ECC71</color>
+    <color name="accent_green_dark">#27AE60</color>
+    <color name="error_red">#FF3B30</color>
+
+    <!-- Backgrounds -->
+    <color name="background_light">#F5F7FA</color>
+    <color name="background_dark">#16191C</color>
+    <color name="card_light">#FFFFFF</color>
+    <color name="card_dark">#1C1C1E</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_light">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="status_excellent">#2ECC71</color>
+    <color name="status_warning">#F39C12</color>
+    <color name="status_poor">#E74C3C</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
@@ -7,7 +36,15 @@
     <color name="colorPrimaryDark">#FF1B2027</color>
     <color name="colorAccent">#FF00C853</color>
 
-    <color name="light_gray">#F5F5F5</color>
     <color name="text_gray">#888888</color>
     <color name="green">#00C853</color>
+
+    <!-- New Colors for Uploads Screen -->
+    <color name="slate_500">#64748B</color>
+    <color name="slate_400">#94A3B8</color>
+    <color name="amber_500">#F59E0B</color>
+    <color name="emerald_500">#10B981</color>
+    <color name="blue_700">#1D4ED8</color>
+    <color name="primary">#000000</color>
+
 </resources>

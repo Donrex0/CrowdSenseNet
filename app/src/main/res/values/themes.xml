@@ -1,9 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.CrowdSenseNet" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Theme.CrowdSenseNet" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+
+        <!-- Background -->
+        <item name="android:colorBackground">@color/background_light</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Navigation Bar -->
+        <item name="android:navigationBarColor">@color/background_light</item>
+
+        <!-- Button Style -->
+        <item name="materialButtonStyle">@style/Widget.CrowdSenseNet.Button</item>
+
     </style>
 
-    <style name="Theme.CrowdSenseNet" parent="Base.Theme.CrowdSenseNet" />
 </resources>

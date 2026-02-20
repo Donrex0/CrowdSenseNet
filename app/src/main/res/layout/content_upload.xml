@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spacing="12dp">
+
+        <!-- Stats Cards -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginBottom="16dp"
+            android:gap="8dp">
+
+            <!-- Pending Card -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textSize="10sp"
+                    android:textColor="@color/slate_500"
+                    android:textAllCaps="true"
+                    android:fontFamily="@font/space_grotesk"
+                    android:letterSpacing="0.1"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:gap="4dp"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="142"
+                        android:textSize="24sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/space_grotesk"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Records"
+                        android:textSize="10sp"
+                        android:textColor="@color/amber_500"
+                        android:fontFamily="@font/space_grotesk"
+                        android:layout_marginBottom="4dp"/>
+                </LinearLayout>
+
+                <!-- Progress bar -->
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:progress="40"
+                    android:max="100"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:progressDrawable="@drawable/progress_amber"
+                    android:layout_marginTop="8dp"
+                    android:indeterminate="false"
+                    android:clipToOutline="true"/>
+            </LinearLayout>
+
+            <!-- Uploaded Card -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Uploaded"
+                    android:textSize="10sp"
+                    android:textColor="@color/slate_500"
+                    android:textAllCaps="true"
+                    android:fontFamily="@font/space_grotesk"
+                    android:letterSpacing="0.1"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:gap="4dp"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2,540"
+                        android:textSize="24sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/space_grotesk"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textSize="10sp"
+                        android:textColor="@color/emerald_500"
+                        android:fontFamily="@font/space_grotesk"
+                        android:layout_marginBottom="4dp"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:progress="100"
+                    android:max="100"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:progressDrawable="@drawable/progress_emerald"
+                    android:layout_marginTop="8dp"
+                    android:indeterminate="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Upload Button -->
+        <Button
+            android:id="@+id/btn_upload_now"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Upload Now"
+            android:drawableStart="@drawable/ic_cloud_upload"
+            android:drawablePadding="8dp"
+            android:backgroundTint="@color/blue_700"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/space_grotesk"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sync Activity Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sync Activity"
+            android:textSize="11sp"
+            android:textColor="@color/slate_400"
+            android:textAllCaps="true"
+            android:fontFamily="@font/space_grotesk"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Sync Activity List -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spacing="12dp">
+
+            <!-- Example Item -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gap="8dp">
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:backgroundTint="@color/emerald_500"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/circle_dot"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Uploaded 32 records successfully"
+                        android:textSize="14sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/space_grotesk"
+                        android:textStyle="medium"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2 mins ago"
+                        android:textSize="10sp"
+                        android:textColor="@color/slate_400"
+                        android:fontFamily="@font/space_grotesk"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Repeat similar items for other sync activity entries -->
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

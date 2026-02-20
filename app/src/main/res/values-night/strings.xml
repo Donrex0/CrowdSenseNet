@@ -1,59 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">CrowdSenseNet</string>
-
-    <!-- Splash -->
-    <string name="splash_subtitle">Crowdsensed Drive Test Mobile Application for Coverage Prediction</string>
-    <string name="initializing_system">Initializing System</string>
-
-    <!-- Bottom Navigation -->
-    <string name="nav_dashboard">Dashboard</string>
-    <string name="nav_metrics">Metrics</string>
-    <string name="nav_uploads">Uploads</string>
-    <string name="nav_settings">Settings</string>
-
-    <!-- Dashboard -->
-    <string name="start_sensing">Start</string>
-    <string name="stop_sensing">Stop</string>
-    <string name="sensing_status">Sensing Status</string>
-    <string name="system_state">System State</string>
-    <string name="network_mode">Network Mode</string>
-    <string name="positioning">Positioning</string>
-    <string name="gps_active">GPS Active</string>
-    <string name="gps_inactive">GPS Inactive</string>
-
-    <!-- Metrics -->
-    <string name="radio_metrics">Radio Metrics</string>
-    <string name="cell_information">Cell Information</string>
-    <string name="location_data">Location Data</string>
-    <string name="network_node_metrics">Network Node Metrics</string>
-    <string name="gps_coordinates">GPS Coordinates</string>
-
-    <!-- Upload -->
-    <string name="upload_now">Upload Now</string>
-    <string name="pending_records">Pending Records</string>
-    <string name="uploaded_records">Uploaded Records</string>
-    <string name="uploads">Uploads</string>
-
-    <!-- Settings -->
-    <string name="sampling_interval">Sampling Interval</string>
-    <string name="backend_url">Backend Server URL</string>
-    <string name="permissions_status">Permissions Status</string>
-    <string name="engineering_research_lab">ENGINEERING RESEARCH LAB</string>
-    <string name="metrics">Metrics</string>
-    <string name="settings">Settings</string>
-    <string name="start">StART</string>
-    <string name="ready_to_begin">Ready to begin drive testing</string>
-    <string name="live_coverage_map">LIVE COVERAGE MAP</string>
+    <string name="network_node_metrics">Network Node</string>
     <string name="data_collection">DATA COLLECTION</string>
-    <string name="enable_background_logging">Enable Background Logging</string>
-    <string name="backend_configuration">BACKEND CONFIGURATION</string>
-    <string name="server_url">https://api.cell-pro/v1\n</string>
-    <string name="test_connection">Test Connection</string>
-    <string name="permissions">PERMISSIONS</string>
-    <string name="location_services">Location Services\n</string>
-    <string name="phone_state">Phone State</string>
-
     <string name="app_name">CrowdSenseNet</string>
 
     <!-- Splash Screen -->

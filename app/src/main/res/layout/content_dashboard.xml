@@ -31,14 +31,14 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_play_arrow"
-                    app:tint="@color/white" />
+                    app:tint="@color/on_primary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/start"
-                    android:textColor="@color/white"
+                    android:textColor="@color/on_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -50,7 +50,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:text="@string/ready_to_begin"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <androidx.cardview.widget.CardView
@@ -177,7 +177,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_location"
-                    app:tint="@color/green" />
+                    app:tint="@color/background_dark" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -190,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/positioning"
-                        android:textColor="@color/text_gray"
+                        android:textColor="@color/text_secondary"
                         android:textSize="10sp"
                         android:textStyle="bold" />
 
@@ -207,24 +207,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="37.7749° N"
-                    android:textColor="@color/text_gray"
+                    android:textColor="@color/text_secondary"
                     android:textSize="10sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="166dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="32dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/map_placeholder" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/map" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -237,10 +238,11 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
                 android:text="@string/live_coverage_map"
-                android:textColor="@color/white"
+                android:textColor="@color/on_primary"
                 android:textSize="8sp"
                 android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
