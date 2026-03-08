@@ -250,6 +250,26 @@ class MetricsActivity : AppCompatActivity() {
                 
                 val (rsrp, rsrq) = signal
                 
+                // Get cell info
+                val cellInfo = try {
+                    if (hasPhonePermission) {
+                        val info = com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
+                        // Store last known values
+                        if (isSensing) {
+                            NetworkDataStorage.setLastKnownCellInfo(info.first, info.second)
+                        }
+                        info
+                    } else {
+                        android.util.Log.d("MetricsActivity", "No phone permission for cell info")
+                        if (isSensing) Pair("Unknown", 0.0) else NetworkDataStorage.getLastKnownCellInfo()
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("MetricsActivity", "Error getting cell info", e)
+                    if (isSensing) Pair("Unknown", 0.0) else NetworkDataStorage.getLastKnownCellInfo()
+                }
+                
+                val (cellId, pci) = cellInfo
+                
                 // Get location
                 val location = try {
                     if (hasLocationPermission) {
