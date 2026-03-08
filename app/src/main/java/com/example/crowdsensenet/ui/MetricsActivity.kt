@@ -2,8 +2,11 @@ package com.example.crowdsensenet.ui
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
+import android.telephony.TelephonyManager.PhoneStateListener
+import android.telephony.SignalStrength
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -95,8 +98,6 @@ class MetricsActivity : AppCompatActivity() {
         // Set default zoom
         val mapController = map.controller
         mapController.setZoom(15.0)
-        
-        updateMapWithLatestData()
     }
     
     private fun startMetricsUpdates() {
@@ -196,19 +197,19 @@ class MetricsActivity : AppCompatActivity() {
     private suspend fun getSignalStrengthModern(): Pair<Double, Double> {
         return suspendCancellableCoroutine { cont ->
             val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val phoneStateListener = object : TelephonyManager.PhoneStateListener() {
-                override fun onSignalStrengthsChanged(signalStrength: android.telephony.SignalStrength) {
+            val phoneStateListener = object : PhoneStateListener() {
+                override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
                     val result = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrength(signalStrength)
                     cont.resume(result)
-                    telephonyManager.listen(this, TelephonyManager.LISTEN_NONE)
+                    telephonyManager.listen(this, PhoneStateListener.LISTEN_NONE)
                 }
             }
             
-            telephonyManager.listen(phoneStateListener, TelephonyManager.LISTEN_SIGNAL_STRENGTHS)
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
             
             // Handle cancellation
             cont.invokeOnCancellation {
-                telephonyManager.listen(phoneStateListener, TelephonyManager.LISTEN_NONE)
+                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
             }
         }
     }
