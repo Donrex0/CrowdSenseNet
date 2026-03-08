@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
-import com.example.crowdsensenet.data.local.AppDatabase
+// import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.utils.LocationUtils
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -27,7 +27,7 @@ class MetricsActivity : AppCompatActivity() {
     private lateinit var latitudeText: TextView
     private lateinit var longitudeText: TextView
     
-    private lateinit var database: AppDatabase
+    // private lateinit var database: AppDatabase  // TEMPORARILY DISABLED
     private lateinit var map: MapView
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class MetricsActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_metrics)
         
-        database = AppDatabase.getDatabase(this)
+        // database = AppDatabase.getDatabase(this)  // TEMPORARILY DISABLED
         initializeViews()
         setupNavigation()
         setupMap()
@@ -111,31 +111,24 @@ class MetricsActivity : AppCompatActivity() {
     private fun updateMetricsDisplay() {
         lifecycleScope.launch {
             try {
-                val latestMeasurement = database.measurementDao().getLatestMeasurement()
+                // TEMPORARILY DISABLED - DATABASE ACCESS
+                // val latestMeasurement = database.measurementDao().getLatestMeasurement()
                 
-                if (latestMeasurement != null) {
-                    runOnUiThread {
-                        rsrpValueText.text = "${latestMeasurement.rsrp} dBm"
-                        rsrqValueText.text = "${latestMeasurement.rsrq} dB"
-                        cellIdText.text = latestMeasurement.cellId
-                        pciText.text = latestMeasurement.pci.toString()
-                        networkTechnologyText.text = latestMeasurement.networkTechnology
-                        latitudeText.text = "%.6f".format(latestMeasurement.latitude)
-                        longitudeText.text = "%.6f".format(latestMeasurement.longitude)
-                    }
-                    
-                    updateMapWithMeasurement(latestMeasurement)
-                } else {
-                    runOnUiThread {
-                        rsrpValueText.text = "No Data"
-                        rsrqValueText.text = "No Data"
-                        cellIdText.text = "No Data"
-                        pciText.text = "No Data"
-                        networkTechnologyText.text = "No Data"
-                        latitudeText.text = "No Data"
-                        longitudeText.text = "No Data"
-                    }
+                // Show placeholder data instead
+                runOnUiThread {
+                    rsrpValueText.text = "-85 dBm"
+                    rsrqValueText.text = "-7 dB"
+                    cellIdText.text = "12345"
+                    pciText.text = "100"
+                    networkTechnologyText.text = "4G LTE"
+                    latitudeText.text = "37.7749"
+                    longitudeText.text = "-122.4194"
                 }
+                
+                // TEMPORARILY DISABLED - MAP UPDATE
+                // if (latestMeasurement != null) {
+                //     updateMapWithMeasurement(latestMeasurement)
+                // }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -145,16 +138,19 @@ class MetricsActivity : AppCompatActivity() {
     private fun updateMapWithLatestData() {
         lifecycleScope.launch {
             try {
-                val latestMeasurement = database.measurementDao().getLatestMeasurement()
-                latestMeasurement?.let { measurement ->
-                    updateMapWithMeasurement(measurement)
-                }
+                // TEMPORARILY DISABLED - DATABASE ACCESS
+                // val latestMeasurement = database.measurementDao().getLatestMeasurement()
+                // latestMeasurement?.let { measurement ->
+                //     updateMapWithMeasurement(measurement)
+                // }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
     
+    // TEMPORARILY DISABLED - MEASUREMENT ENTITY USAGE
+    /*
     private fun updateMapWithMeasurement(measurement: com.example.crowdsensenet.data.local.MeasurementEntity) {
         runOnUiThread {
             try {
@@ -178,6 +174,7 @@ class MetricsActivity : AppCompatActivity() {
             }
         }
     }
+    */
     
     override fun onResume() {
         super.onResume()

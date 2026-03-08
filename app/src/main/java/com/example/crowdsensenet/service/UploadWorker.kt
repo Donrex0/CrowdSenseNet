@@ -23,7 +23,7 @@ class UploadWorker(
         return try {
             // TEMPORARILY DISABLED - NO DATABASE ACCESS
             // val pendingMeasurements = measurementDao.getPendingMeasurements()
-            val pendingMeasurements = emptyList<com.example.crowdsensenet.data.local.MeasurementEntity>() // Placeholder
+            val pendingMeasurements = emptyList<Any>() // Placeholder
             
             if (pendingMeasurements.isEmpty()) {
                 return Result.success()
@@ -32,25 +32,30 @@ class UploadWorker(
             var uploadedCount = 0
             var failedCount = 0
             
+            // TEMPORARILY DISABLED - Upload functionality
             // Upload in batches of 50 for better performance
-            val batchSize = 50
-            val batches = pendingMeasurements.chunked(batchSize)
+            // val batchSize = 50
+            // val batches = pendingMeasurements.chunked(batchSize)
             
-            for (batch in batches) {
-                when (val result = firebaseRepository.uploadBatch(batch)) {
-                    is UploadResult.Success -> {
-                        uploadedCount += result.count
-                        // TEMPORARILY DISABLED - Mark as uploaded in local database
-                        // batch.forEach { measurement ->
-                        //     measurementDao.markAsUploaded(measurement.id)
-                        // }
-                    }
-                    is UploadResult.Failure -> {
-                        failedCount += batch.size
-                        // Continue with next batch instead of failing completely
-                    }
-                }
-            }
+            // for (batch in batches) {
+            //     when (val result = firebaseRepository.uploadBatch(batch)) {
+            //         is UploadResult.Success -> {
+            //             uploadedCount += result.count
+            //             // TEMPORARILY DISABLED - Mark as uploaded in local database
+            //             // batch.forEach { measurement ->
+            //             //     measurementDao.markAsUploaded(measurement.id)
+            //             // }
+            //         }
+            //         is UploadResult.Failure -> {
+            //             failedCount += batch.size
+            //             // Continue with next batch instead of failing completely
+            //         }
+            //     }
+            // }
+            
+            // TEMPORARILY DISABLED - SIMULATE SUCCESS
+            uploadedCount = 0
+            failedCount = 0
 
             // Return progress information
             val outputData = workDataOf(
