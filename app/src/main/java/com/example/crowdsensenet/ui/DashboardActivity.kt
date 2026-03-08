@@ -16,6 +16,7 @@ import com.example.crowdsensenet.service.SensingService
 import com.example.crowdsensenet.utils.LocationUtils
 import com.example.crowdsensenet.utils.NetworkUtils
 import com.example.crowdsensenet.utils.NetworkDataStorage
+import com.example.crowdsensenet.ui.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -103,9 +104,10 @@ class DashboardActivity : AppCompatActivity() {
     }
     
     private fun startSensing() {
+        val samplingInterval = SettingsActivity.getSamplingInterval(this)
         val intent = Intent(this, SensingService::class.java).apply {
             action = SensingService.ACTION_START
-            putExtra(SensingService.EXTRA_SAMPLING_INTERVAL, 5000L) // 5 seconds
+            putExtra(SensingService.EXTRA_SAMPLING_INTERVAL, samplingInterval)
         }
         
         ContextCompat.startForegroundService(this, intent)
@@ -135,7 +137,8 @@ class DashboardActivity : AppCompatActivity() {
                 try {
                     updateNetworkInfo()
                     updateLocationInfo()
-                    delay(2000) // Update every 2 seconds
+                    val samplingInterval = SettingsActivity.getSamplingInterval(this@DashboardActivity)
+                    delay(samplingInterval) // Use sampling interval from settings
                 } catch (e: Exception) {
                     e.printStackTrace()
                     delay(5000)

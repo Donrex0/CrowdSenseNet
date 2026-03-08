@@ -18,6 +18,7 @@ import com.example.crowdsensenet.R
 import com.example.crowdsensenet.utils.LocationUtils
 import com.example.crowdsensenet.utils.NetworkUtils
 import com.example.crowdsensenet.utils.NetworkDataStorage
+import com.example.crowdsensenet.ui.SettingsActivity
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.util.GeoPoint
@@ -180,7 +181,8 @@ class MetricsActivity : AppCompatActivity() {
             while (true) {
                 try {
                     updateMetricsDisplay()
-                    delay(3000) // Update every 3 seconds
+                    val samplingInterval = SettingsActivity.getSamplingInterval(this@MetricsActivity)
+                    delay(samplingInterval) // Use sampling interval from settings
                 } catch (e: Exception) {
                     e.printStackTrace()
                     delay(5000)

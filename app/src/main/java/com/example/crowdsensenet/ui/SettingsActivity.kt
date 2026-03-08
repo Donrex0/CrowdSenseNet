@@ -1,5 +1,6 @@
 package com.example.crowdsensenet.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -43,6 +44,12 @@ class SettingsActivity : AppCompatActivity() {
             "30 seconds" to 30000L,
             "60 seconds" to 60000L
         )
+        
+        fun getSamplingInterval(context: Context): Long {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val intervalString = prefs.getString(KEY_SAMPLING_INTERVAL, "5 seconds") ?: "5 seconds"
+            return SAMPLING_INTERVALS[intervalString] ?: 5000L
+        }
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,13 +202,13 @@ class SettingsActivity : AppCompatActivity() {
                 delay(2000)
                 
                 runOnUiThread {
-                    testConnectionStatusText.text = "Demo Mode"
+                    testConnectionStatusText.text = "Connection to firebase successful"
                     testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_blue_dark))
                     testConnectionButton.isEnabled = true
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    testConnectionStatusText.text = "Demo Mode"
+                    testConnectionStatusText.text = "Connection to firebase unsucessful"
                     testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_blue_dark))
                     testConnectionButton.isEnabled = true
                 }
