@@ -51,9 +51,10 @@ dependencies {
     
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.androidx.room.ktx)
-    kapt("androidx.room:room-compiler:2.6.1")
+    // TEMPORARILY DISABLED ROOM DEPENDENCIES
+    // implementation(libs.androidx.room.common.jvm)
+    // implementation(libs.androidx.room.ktx)
+    // kapt("androidx.room:room-compiler:2.6.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

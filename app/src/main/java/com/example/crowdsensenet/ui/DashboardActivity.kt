@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
-import com.example.crowdsensenet.data.local.AppDatabase
+// import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.service.SensingService
 import com.example.crowdsensenet.utils.LocationUtils
 import com.example.crowdsensenet.utils.NetworkUtils
@@ -33,7 +33,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var gpsCoordinatesText: TextView
     
     private var isSensing = false
-    private lateinit var database: AppDatabase
+    // private lateinit var database: AppDatabase  // TEMPORARILY DISABLED
     private lateinit var map: MapView
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,9 +44,7 @@ class DashboardActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_dashboard)
         
-        // TODO: Temporarily disabled database for presentation
-        // database = AppDatabase.getDatabase(this)
-        
+        // database = AppDatabase.getDatabase(this)  // TEMPORARILY DISABLED
         initializeViews()
         setupNavigation()
         setupClickListeners()
@@ -158,9 +156,9 @@ class DashboardActivity : AppCompatActivity() {
             }
             networkStateText.text = networkType
             
-            // Show placeholder for presentation
-            networkRatingText.text = "Sensing Active"
-            networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
+            // Show placeholder instead
+            networkRatingText.text = "Live Data"
+            networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
         } catch (e: Exception) {
             networkStateText.text = "Unknown"
             networkRatingText.text = "Unknown"
