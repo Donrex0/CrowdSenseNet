@@ -137,15 +137,9 @@ class MetricsActivity : AppCompatActivity() {
                     Pair("Unknown", 0.0)
                 }
                 
-                // Get signal strength
+                // Get signal strength - use legacy method for all versions
                 val (rsrp, rsrq) = try {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                        // Use modern API for Android 10+
-                        getSignalStrengthModern()
-                    } else {
-                        // Use legacy API for older versions
-                        com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
-                    }
+                    com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
                 } catch (e: Exception) {
                     Pair(-85.0, -7.0) // Fallback values
                 }
@@ -188,27 +182,6 @@ class MetricsActivity : AppCompatActivity() {
                     latitudeText.text = "No Data"
                     longitudeText.text = "No Data"
                 }
-            }
-        }
-    }
-    
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private suspend fun getSignalStrengthModern(): Pair<Double, Double> {
-        return suspendCancellableCoroutine { cont ->
-            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val phoneStateListener = object : TelephonyManager.PhoneStateListener() {
-                override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
-                    val result = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrength(signalStrength)
-                    cont.resume(result)
-                    telephonyManager.listen(this, TelephonyManager.PhoneStateListener.LISTEN_NONE)
-                }
-            }
-            
-            telephonyManager.listen(phoneStateListener, TelephonyManager.PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
-            
-            // Handle cancellation
-            cont.invokeOnCancellation {
-                telephonyManager.listen(phoneStateListener, TelephonyManager.PhoneStateListener.LISTEN_NONE)
             }
         }
     }
