@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import kotlin.coroutines.resume
 
 object LocationUtils {
@@ -87,22 +88,24 @@ object LocationUtils {
             Looper.getMainLooper()
         )
 
-        // Timeout after 10 seconds using a different approach
+        // Timeout after 10 seconds using a simpler approach
         cont.invokeOnCancellation {
             fusedLocationClient.removeLocationUpdates(callback)
         }
         
-        // Simple timeout without GlobalScope
-        try {
-            kotlinx.coroutines.runBlocking {
-                delay(10000)
-                if (cont.context[kotlin.coroutines.Job]?.isActive == true) {
-                    fusedLocationClient.removeLocationUpdates(callback)
-                    cont.resume(null)
-                }
+        // Use a simple timeout without complex coroutine context
+        kotlinx.coroutines.GlobalScope.launch {
+            delay(10000)
+            if (cont.context[kotlin.coroutines.CancellationException]?.let { true } ?: false) {
+                // Already cancelled, don't resume
+                return@launch
             }
-        } catch (e: Exception) {
-            // Timeout failed, but that's okay
+            try {
+                fusedLocationClient.removeLocationUpdates(callback)
+                cont.resume(null)
+            } catch (e: Exception) {
+                // Already resumed, ignore
+            }
         }
     }
 
