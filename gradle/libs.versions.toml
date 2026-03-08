@@ -13,6 +13,7 @@ firebaseFirestoreKtx = "25.1.1"
 roomCommonJvm = "2.8.4"
 roomKtx = "2.8.4"
 roomCompiler = "2.8.4"
+kotlinAndroid = "2.0.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,4 +32,5 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroid" }
 
