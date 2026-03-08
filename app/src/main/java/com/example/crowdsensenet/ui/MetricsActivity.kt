@@ -16,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
 // import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.utils.LocationUtils
+import com.example.crowdsensenet.utils.NetworkUtils
+import com.example.crowdsensenet.utils.NetworkDataStorage
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.util.GeoPoint
@@ -209,15 +211,18 @@ class MetricsActivity : AppCompatActivity() {
                 val networkType = try {
                     if (hasPhonePermission) {
                         val type = com.example.crowdsensenet.utils.NetworkUtils.getNetworkType(this@MetricsActivity)
-                        android.util.Log.d("MetricsActivity", "Network type: $type")
+                        // Store last known network type
+                        if (isSensing) {
+                            NetworkDataStorage.setLastKnownNetworkType(type)
+                        }
                         type
                     } else {
-                        android.util.Log.d("MetricsActivity", "No phone permission")
-                        "Permission Required"
+                        android.util.Log.d("MetricsActivity", "No phone permission for network type")
+                        if (isSensing) "Unknown" else NetworkDataStorage.getLastKnownNetworkType()
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("MetricsActivity", "Error getting network type", e)
-                    if (isSensing) "Unknown" else NetworkUtils.getLastKnownNetworkType()
+                    if (isSensing) "Unknown" else NetworkDataStorage.getLastKnownNetworkType()
                 }
                 
                 val signal = try {
@@ -226,20 +231,22 @@ class MetricsActivity : AppCompatActivity() {
                             // Get real-time signal when sensing is on
                             val sig = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
                             // Store last known values
-                            NetworkUtils.setLastKnownSignalStrength(sig.first, sig.second)
+                            NetworkDataStorage.setLastKnownSignalStrength(sig.first, sig.second)
                             sig
                         } else {
                             // Use last known values when sensing is off
-                            NetworkUtils.getLastKnownSignalStrength()
+                            NetworkDataStorage.getLastKnownSignalStrength()
                         }
                     } else {
                         android.util.Log.d("MetricsActivity", "No phone permission for signal")
-                        if (isSensing) Pair(-85.0, -7.0) else NetworkUtils.getLastKnownSignalStrength()
+                        if (isSensing) Pair(-85.0, -7.0) else NetworkDataStorage.getLastKnownSignalStrength()
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("MetricsActivity", "Error getting signal strength", e)
-                    if (isSensing) Pair(-85.0, -7.0) else NetworkUtils.getLastKnownSignalStrength()
+                    if (isSensing) Pair(-85.0, -7.0) else NetworkDataStorage.getLastKnownSignalStrength()
                 }
+                
+                val (rsrp, rsrq) = signal
                 
                 // Get location
                 val location = try {
@@ -288,30 +295,6 @@ class MetricsActivity : AppCompatActivity() {
                     latitudeText.text = "Error"
                     longitudeText.text = "Error"
                 }
-            }
-        }
-    }
-    
-    private fun updateMapWithLocation(latitude: Double, longitude: Double) {
-        runOnUiThread {
-            try {
-                val location = GeoPoint(latitude, longitude)
-                
-                // Clear existing markers
-                map.overlays.clear()
-                
-                // Add new marker
-                val marker = Marker(map)
-                marker.position = location
-                marker.title = "Current Location"
-                marker.subDescription = "Lat: $latitude, Lon: $longitude"
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                map.overlays.add(marker)
-                
-                // Center map on location
-                map.controller.setCenter(location)
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }

@@ -216,46 +216,6 @@ object NetworkUtils {
         return Pair(rsrp, rsrq)
     }
     
-    // Companion object to store last known values
-    companion object {
-        private var lastKnownSignalStrength: Pair<Double, Double>? = null
-        private var lastKnownLocation: Location? = null
-        private var lastKnownCellInfo: Pair<String, Double>? = null
-        private var lastKnownNetworkType: String? = null
-        
-        fun getLastKnownSignalStrength(): Pair<Double, Double> {
-            return lastKnownSignalStrength ?: Pair(-93.0, -12.0) // G-block default
-        }
-        
-        fun setLastKnownSignalStrength(rsrp: Double, rsrq: Double) {
-            lastKnownSignalStrength = Pair(rsrp, rsrq)
-        }
-        
-        fun getLastKnownLocation(): Location? {
-            return lastKnownLocation
-        }
-        
-        fun setLastKnownLocation(location: Location) {
-            lastKnownLocation = location
-        }
-        
-        fun getLastKnownCellInfo(): Pair<String, Double> {
-            return lastKnownCellInfo ?: Pair("62301123", 45.0) // G-block default
-        }
-        
-        fun setLastKnownCellInfo(cellId: String, pci: Double) {
-            lastKnownCellInfo = Pair(cellId, pci)
-        }
-        
-        fun getLastKnownNetworkType(): String {
-            return lastKnownNetworkType ?: "LTE"
-        }
-        
-        fun setLastKnownNetworkType(networkType: String) {
-            lastKnownNetworkType = networkType
-        }
-    }
-    
     @SuppressLint("MissingPermission")
     private fun getSignalStrengthFromLevel(tm: TelephonyManager): Pair<Double, Double> {
         return try {
@@ -287,5 +247,45 @@ object NetworkUtils {
         } catch (e: Exception) {
             Pair(-85.0, -10.0) // Realistic fallback values
         }
+    }
+}
+
+// Global object for storing last known values
+object NetworkDataStorage {
+    private var lastKnownSignalStrength: Pair<Double, Double>? = null
+    private var lastKnownLocation: Location? = null
+    private var lastKnownCellInfo: Pair<String, Double>? = null
+    private var lastKnownNetworkType: String? = null
+    
+    fun getLastKnownSignalStrength(): Pair<Double, Double> {
+        return lastKnownSignalStrength ?: Pair(-93.0, -12.0) // G-block default
+    }
+    
+    fun setLastKnownSignalStrength(rsrp: Double, rsrq: Double) {
+        lastKnownSignalStrength = Pair(rsrp, rsrq)
+    }
+    
+    fun getLastKnownLocation(): Location? {
+        return lastKnownLocation
+    }
+    
+    fun setLastKnownLocation(location: Location) {
+        lastKnownLocation = location
+    }
+    
+    fun getLastKnownCellInfo(): Pair<String, Double> {
+        return lastKnownCellInfo ?: Pair("62301123", 45.0) // G-block default
+    }
+    
+    fun setLastKnownCellInfo(cellId: String, pci: Double) {
+        lastKnownCellInfo = Pair(cellId, pci)
+    }
+    
+    fun getLastKnownNetworkType(): String {
+        return lastKnownNetworkType ?: "LTE"
+    }
+    
+    fun setLastKnownNetworkType(networkType: String) {
+        lastKnownNetworkType = networkType
     }
 }

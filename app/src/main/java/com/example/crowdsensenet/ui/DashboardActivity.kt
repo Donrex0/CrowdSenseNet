@@ -15,6 +15,7 @@ import com.example.crowdsensenet.R
 import com.example.crowdsensenet.service.SensingService
 import com.example.crowdsensenet.utils.LocationUtils
 import com.example.crowdsensenet.utils.NetworkUtils
+import com.example.crowdsensenet.utils.NetworkDataStorage
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -166,12 +167,12 @@ class DashboardActivity : AppCompatActivity() {
                         // Get real-time data when sensing is on
                         val signal = NetworkUtils.getSignalStrengthLegacy(this)
                         // Store last known values
-                        NetworkUtils.setLastKnownSignalStrength(rsrp, rsrq)
-                        NetworkUtils.setLastKnownNetworkType(networkType)
+                        NetworkDataStorage.setLastKnownSignalStrength(signal.first, signal.second)
+                        NetworkDataStorage.setLastKnownNetworkType(networkType)
                         signal
                     } else {
                         // Use last known values when sensing is off
-                        NetworkUtils.getLastKnownSignalStrength()
+                        NetworkDataStorage.getLastKnownSignalStrength()
                     }
                     
                     networkRatingText.text = "${rsrp.toInt()} dBm"
