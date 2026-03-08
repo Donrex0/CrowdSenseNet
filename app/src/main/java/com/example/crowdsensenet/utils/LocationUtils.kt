@@ -88,17 +88,18 @@ object LocationUtils {
             Looper.getMainLooper()
         )
 
-        // Timeout after 10 seconds using a simpler approach
+        // Set up cancellation handler only once
         cont.invokeOnCancellation {
             fusedLocationClient.removeLocationUpdates(callback)
         }
         
-        // Use a simple timeout without complex cancellation checking
+        // Use a simple timeout without interfering with cancellation
         kotlinx.coroutines.GlobalScope.launch {
             delay(10000)
             try {
-                fusedLocationClient.removeLocationUpdates(callback)
+                // Try to resume with null if not already resumed
                 cont.resume(null)
+                fusedLocationClient.removeLocationUpdates(callback)
             } catch (e: IllegalStateException) {
                 // Already resumed, ignore
             } catch (e: Exception) {
