@@ -112,23 +112,36 @@ object NetworkUtils {
                         val rsrq = signalStrength.rsrq.toDouble()
                         Pair(rsrp, rsrq)
                     }
-                    is android.telephony.CellInfoNr -> {
-                        val signalStrength = firstCellInfo.cellSignalStrength
-                        // For 5G NR, try to get signal strength if available
-                        val rsrp = try {
-                            signalStrength.javaClass.getMethod("getRsrp")?.invoke(signalStrength) as? Double ?: -120.0
+                    // Only use CellInfoNr on Android Q and above
+                    else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        try {
+                            when (firstCellInfo) {
+                                is android.telephony.CellInfoNr -> {
+                                    val signalStrength = firstCellInfo.cellSignalStrength
+                                    // For 5G NR, try to get signal strength if available
+                                    val rsrp = try {
+                                        signalStrength.javaClass.getMethod("getRsrp")?.invoke(signalStrength) as? Double ?: -120.0
+                                    } catch (e: Exception) {
+                                        -120.0
+                                    }
+                                    val rsrq = try {
+                                        signalStrength.javaClass.getMethod("getRsrq")?.invoke(signalStrength) as? Double ?: -20.0
+                                    } catch (e: Exception) {
+                                        -20.0
+                                    }
+                                    Pair(rsrp, rsrq)
+                                }
+                                else -> {
+                                    // Fallback for other network types
+                                    getSignalStrengthFromLevel(tm)
+                                }
+                            }
                         } catch (e: Exception) {
-                            -120.0
+                            // CellInfoNr not available, fallback
+                            getSignalStrengthFromLevel(tm)
                         }
-                        val rsrq = try {
-                            signalStrength.javaClass.getMethod("getRsrq")?.invoke(signalStrength) as? Double ?: -20.0
-                        } catch (e: Exception) {
-                            -20.0
-                        }
-                        Pair(rsrp, rsrq)
-                    }
-                    else -> {
-                        // Fallback for other network types
+                    } else {
+                        // Fallback for older Android versions
                         getSignalStrengthFromLevel(tm)
                     }
                 }
