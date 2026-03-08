@@ -122,15 +122,15 @@ class MetricsActivity : AppCompatActivity() {
                 android.util.Log.d("MetricsActivity", "Updating metrics display...")
                 
                 // Check permissions first
-                val hasPhonePermission = android.content.ContextCompat.checkSelfPermission(
+                val hasPhonePermission = ContextCompat.checkSelfPermission(
                     this@MetricsActivity, 
                     Manifest.permission.READ_PHONE_STATE
-                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                ) == PackageManager.PERMISSION_GRANTED
                 
-                val hasLocationPermission = android.content.ContextCompat.checkSelfPermission(
+                val hasLocationPermission = ContextCompat.checkSelfPermission(
                     this@MetricsActivity, 
                     Manifest.permission.ACCESS_FINE_LOCATION
-                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                ) == PackageManager.PERMISSION_GRANTED
                 
                 android.util.Log.d("MetricsActivity", "Permissions - Phone: $hasPhonePermission, Location: $hasLocationPermission")
                 
