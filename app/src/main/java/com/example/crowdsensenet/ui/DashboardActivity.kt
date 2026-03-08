@@ -229,9 +229,21 @@ class DashboardActivity : AppCompatActivity() {
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
         
-        // Set default zoom and center
+        // Set default zoom and center on G-block, University of Buea
         val mapController = map.controller
-        mapController.setZoom(15.0)
+        mapController.setZoom(16.0) // Higher zoom for G-block detail
+        
+        // Center on G-block, University of Buea initially
+        val gBlockLocation = GeoPoint(4.1518, 9.2425)
+        mapController.setCenter(gBlockLocation)
+        
+        // Add initial marker for G-block
+        val gBlockMarker = Marker(map)
+        gBlockMarker.position = gBlockLocation
+        gBlockMarker.title = "G-Block, University of Buea"
+        gBlockMarker.subDescription = "4.1518°N, 9.2425°E"
+        gBlockMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        map.overlays.add(gBlockMarker)
         
         // Show current location on map
         updateMapLocation()

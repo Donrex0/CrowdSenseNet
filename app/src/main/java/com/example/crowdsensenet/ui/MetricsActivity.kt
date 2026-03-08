@@ -113,9 +113,65 @@ class MetricsActivity : AppCompatActivity() {
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
         
-        // Set default zoom
+        // Set default zoom and center on G-block, University of Buea
         val mapController = map.controller
-        mapController.setZoom(15.0)
+        mapController.setZoom(16.0) // Higher zoom for G-block detail
+        
+        // Center on G-block, University of Buea initially
+        val gBlockLocation = GeoPoint(4.1518, 9.2425)
+        mapController.setCenter(gBlockLocation)
+        
+        // Add initial marker for G-block
+        val gBlockMarker = Marker(map)
+        gBlockMarker.position = gBlockLocation
+        gBlockMarker.title = "G-Block, University of Buea"
+        gBlockMarker.subDescription = "4.1518°N, 9.2425°E"
+        gBlockMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        map.overlays.add(gBlockMarker)
+        
+        // Update with current location
+        updateMapLocation()
+    }
+    
+    private fun updateMapLocation() {
+        lifecycleScope.launch {
+            try {
+                val location = LocationUtils.getCurrentLocation(this@MetricsActivity)
+                location?.let {
+                    updateMapWithLocation(it.latitude, it.longitude)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MetricsActivity", "Error updating map location", e)
+            }
+        }
+    }
+    
+    private fun updateMapWithLocation(latitude: Double, longitude: Double) {
+        try {
+            val currentLocation = GeoPoint(latitude, longitude)
+            
+            // Clear existing markers except the G-block marker
+            val gBlockMarker = map.overlays.find { it is Marker && it.title == "G-Block, University of Buea" }
+            map.overlays.clear()
+            
+            // Re-add G-block marker if it existed
+            gBlockMarker?.let { map.overlays.add(it) }
+            
+            // Add current location marker
+            val currentMarker = Marker(map)
+            currentMarker.position = currentLocation
+            currentMarker.title = "Current Location"
+            currentMarker.subDescription = "G-Block Area: %.6f°N, %.6f°E".format(latitude, longitude)
+            currentMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            map.overlays.add(currentMarker)
+            
+            // Center map on current location
+            map.controller.setCenter(currentLocation)
+            
+            android.util.Log.d("MetricsActivity", "Map updated with location: $latitude, $longitude")
+        } catch (e: Exception) {
+            android.util.Log.e("MetricsActivity", "Error updating map with location", e)
+        }
     }
     
     private fun startMetricsUpdates() {
