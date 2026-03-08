@@ -256,6 +256,9 @@ object NetworkDataStorage {
     private var lastKnownLocation: Location? = null
     private var lastKnownCellInfo: Pair<String, Double>? = null
     private var lastKnownNetworkType: String? = null
+    private var currentSimulatedSignalStrength: Pair<Double, Double>? = null
+    private var currentSimulatedCellInfo: Pair<String, Double>? = null
+    private var lastSimulationTime: Long = 0
     
     fun getLastKnownSignalStrength(): Pair<Double, Double> {
         return lastKnownSignalStrength ?: Pair(-93.0, -12.0) // G-block default
@@ -263,6 +266,78 @@ object NetworkDataStorage {
     
     fun setLastKnownSignalStrength(rsrp: Double, rsrq: Double) {
         lastKnownSignalStrength = Pair(rsrp, rsrq)
+    }
+    
+    fun getCurrentSimulatedSignalStrength(): Pair<Double, Double> {
+        val currentTime = System.currentTimeMillis()
+        // Update simulation every 2 seconds maximum to keep values synchronized
+        if (currentSimulatedSignalStrength == null || (currentTime - lastSimulationTime) > 2000) {
+            currentSimulatedSignalStrength = generateNewSimulatedSignalStrength()
+            currentSimulatedCellInfo = generateNewSimulatedCellInfo()
+            lastSimulationTime = currentTime
+        }
+        return currentSimulatedSignalStrength!!
+    }
+    
+    fun getCurrentSimulatedCellInfo(): Pair<String, Double> {
+        val currentTime = System.currentTimeMillis()
+        // Update simulation every 2 seconds maximum to keep values synchronized
+        if (currentSimulatedCellInfo == null || (currentTime - lastSimulationTime) > 2000) {
+            currentSimulatedSignalStrength = generateNewSimulatedSignalStrength()
+            currentSimulatedCellInfo = generateNewSimulatedCellInfo()
+            lastSimulationTime = currentTime
+        }
+        return currentSimulatedCellInfo!!
+    }
+    
+    private fun generateNewSimulatedSignalStrength(): Pair<Double, Double> {
+        val currentTime = System.currentTimeMillis()
+        
+        // Create realistic variations based on G-block, University of Buea specific conditions
+        val baseValues = Pair(-90.0, -11.0) // 4G at G-block
+        
+        // Add realistic variations specific to G-block environment
+        // RSRP changes faster (more sensitive to immediate environment)
+        val timeVariationRsrp = kotlin.math.sin(currentTime / 8000.0) * 2.5 // 8-second cycle (students moving)
+        val buildingInterferenceRsrp = kotlin.math.cos(currentTime / 15000.0) * 1.5 // Building interference
+        val randomVariationRsrp = (kotlin.random.Random.nextDouble() - 0.5) * 1.8 // Small random changes
+        
+        // RSRQ changes slower (more stable, reflects overall channel quality)
+        val timeVariationRsrq = kotlin.math.sin(currentTime / 20000.0) * 1.2 // 20-second cycle (slower changes)
+        val randomVariationRsrq = (kotlin.random.Random.nextDouble() - 0.5) * 0.8 // Less random variation
+        
+        val rsrp = baseValues.first + timeVariationRsrp + buildingInterferenceRsrp + randomVariationRsrp
+        val rsrq = baseValues.second + timeVariationRsrq + randomVariationRsrq
+        
+        return Pair(rsrp, rsrq)
+    }
+    
+    private fun generateNewSimulatedCellInfo(): Pair<String, Double> {
+        val currentTime = System.currentTimeMillis()
+        
+        // Simulate realistic cell IDs for G-block, University of Buea area networks
+        val cellIdBase = when ((currentTime / 12000) % 4) {
+            0L -> "62301" // MTN Cameroon (Buea area)
+            1L -> "62401" // Orange Cameroon (Buea area)  
+            2L -> "62402" // Camtel (Buea area)
+            else -> "62302" // MTN Cameroon (G-block specific)
+        }
+        // Add variation for different cell sectors around G-block
+        val variation = ((currentTime / 6000) % 999).toInt()
+        val cellId = "$cellIdBase$variation"
+        
+        // Simulate realistic PCI values for G-block area cell towers (0-503 for LTE)
+        val basePci = when ((currentTime / 20000) % 5) {
+            0L -> 45   // MTN tower near G-block
+            1L -> 127  // Orange tower near G-block
+            2L -> 233  // Camtel tower near G-block
+            3L -> 89   // Backup MTN tower
+            else -> 312 // Secondary Orange tower
+        }
+        val pciVariation = ((currentTime / 4000) % 8) - 4 // ±4 variation (signal handover)
+        val pci = (basePci + pciVariation).coerceIn(0, 503).toDouble()
+        
+        return Pair(cellId, pci)
     }
     
     fun getLastKnownLocation(): Location? {

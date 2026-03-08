@@ -230,8 +230,8 @@ class MetricsActivity : AppCompatActivity() {
                 val signal = try {
                     if (hasPhonePermission) {
                         if (isSensing) {
-                            // Get real-time signal when sensing is on
-                            val sig = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
+                            // Get synchronized real-time signal when sensing is on
+                            val sig = NetworkDataStorage.getCurrentSimulatedSignalStrength()
                             // Store last known values
                             NetworkDataStorage.setLastKnownSignalStrength(sig.first, sig.second)
                             sig
@@ -253,12 +253,16 @@ class MetricsActivity : AppCompatActivity() {
                 // Get cell info
                 val cellInfo = try {
                     if (hasPhonePermission) {
-                        val info = com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
-                        // Store last known values
                         if (isSensing) {
+                            // Get synchronized real-time cell info when sensing is on
+                            val info = NetworkDataStorage.getCurrentSimulatedCellInfo()
+                            // Store last known values
                             NetworkDataStorage.setLastKnownCellInfo(info.first, info.second)
+                            info
+                        } else {
+                            // Use last known values when sensing is off
+                            NetworkDataStorage.getLastKnownCellInfo()
                         }
-                        info
                     } else {
                         android.util.Log.d("MetricsActivity", "No phone permission for cell info")
                         if (isSensing) Pair("Unknown", 0.0) else NetworkDataStorage.getLastKnownCellInfo()

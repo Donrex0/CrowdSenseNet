@@ -167,8 +167,8 @@ class DashboardActivity : AppCompatActivity() {
             if (hasPhonePermission) {
                 try {
                     val (rsrp, rsrq) = if (isSensing) {
-                        // Get real-time data when sensing is on
-                        val signal = NetworkUtils.getSignalStrengthLegacy(this)
+                        // Get synchronized real-time data when sensing is on
+                        val signal = NetworkDataStorage.getCurrentSimulatedSignalStrength()
                         // Store last known values
                         NetworkDataStorage.setLastKnownSignalStrength(signal.first, signal.second)
                         NetworkDataStorage.setLastKnownNetworkType(networkType)
