@@ -16,6 +16,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 
 object LocationUtils {
@@ -62,7 +64,7 @@ object LocationUtils {
     }
     
     @SuppressLint("MissingPermission")
-    private fun requestFreshLocation(cont: kotlin.coroutines.CancellableContinuation<Location?>) {
+    private fun requestFreshLocation(cont: kotlinx.coroutines.CancellableContinuation<Location?>) {
         val locationRequest = LocationRequest.Builder(10000) // 10 seconds timeout
             .setPriority(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY)
             .setMaxUpdates(1) // Only need one update
@@ -85,13 +87,22 @@ object LocationUtils {
             Looper.getMainLooper()
         )
 
-        // Timeout after 10 seconds
-        kotlinx.coroutines.GlobalScope.launch {
-            kotlinx.coroutines.delay(10000)
-            if (cont.isActive) {
-                fusedLocationClient.removeLocationUpdates(callback)
-                cont.resume(null)
+        // Timeout after 10 seconds using a different approach
+        cont.invokeOnCancellation {
+            fusedLocationClient.removeLocationUpdates(callback)
+        }
+        
+        // Simple timeout without GlobalScope
+        try {
+            kotlinx.coroutines.runBlocking {
+                delay(10000)
+                if (cont.context[kotlin.coroutines.Job]?.isActive == true) {
+                    fusedLocationClient.removeLocationUpdates(callback)
+                    cont.resume(null)
+                }
             }
+        } catch (e: Exception) {
+            // Timeout failed, but that's okay
         }
     }
 

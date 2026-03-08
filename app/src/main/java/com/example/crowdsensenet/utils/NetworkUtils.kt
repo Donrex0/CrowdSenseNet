@@ -114,8 +114,17 @@ object NetworkUtils {
                     }
                     is android.telephony.CellInfoNr -> {
                         val signalStrength = firstCellInfo.cellSignalStrength
-                        val rsrp = signalStrength.rsrp?.toDouble() ?: -120.0
-                        val rsrq = signalStrength.rsrq?.toDouble() ?: -20.0
+                        // For 5G NR, try to get signal strength if available
+                        val rsrp = try {
+                            signalStrength.javaClass.getMethod("getRsrp")?.invoke(signalStrength) as? Double ?: -120.0
+                        } catch (e: Exception) {
+                            -120.0
+                        }
+                        val rsrq = try {
+                            signalStrength.javaClass.getMethod("getRsrq")?.invoke(signalStrength) as? Double ?: -20.0
+                        } catch (e: Exception) {
+                            -20.0
+                        }
                         Pair(rsrp, rsrq)
                     }
                     else -> {
