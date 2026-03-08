@@ -67,27 +67,43 @@ class MetricsActivity : AppCompatActivity() {
     
     private fun setupNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        if (bottomNav == null) {
+            android.util.Log.e("MetricsActivity", "Bottom navigation not found!")
+            return
+        }
+        
+        android.util.Log.d("MetricsActivity", "Bottom navigation found, setting up listener")
         bottomNav.selectedItemId = R.id.navigation_metrics
         
         bottomNav.setOnItemSelectedListener { item ->
+            android.util.Log.d("MetricsActivity", "Navigation item selected: ${item.itemId}")
             when (item.itemId) {
                 R.id.navigation_dashboard -> {
+                    android.util.Log.d("MetricsActivity", "Navigating to Dashboard")
                     startActivity(Intent(this, DashboardActivity::class.java))
                     finish()
                     true
                 }
-                R.id.navigation_metrics -> true
+                R.id.navigation_metrics -> {
+                    android.util.Log.d("MetricsActivity", "Already on Metrics")
+                    true
+                }
                 R.id.navigation_uploads -> {
+                    android.util.Log.d("MetricsActivity", "Navigating to Uploads")
                     startActivity(Intent(this, UploadsActivity::class.java))
                     finish()
                     true
                 }
                 R.id.navigation_settings -> {
+                    android.util.Log.d("MetricsActivity", "Navigating to Settings")
                     startActivity(Intent(this, SettingsActivity::class.java))
                     finish()
                     true
                 }
-                else -> false
+                else -> {
+                    android.util.Log.e("MetricsActivity", "Unknown navigation item: ${item.itemId}")
+                    false
+                }
             }
         }
     }

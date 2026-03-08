@@ -159,12 +159,34 @@ class DashboardActivity : AppCompatActivity() {
             }
             networkStateText.text = networkType
             
-            // Show placeholder instead
-            networkRatingText.text = "Live Data"
-            networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
+            // Get real signal strength like MetricsActivity
+            if (hasPhonePermission) {
+                try {
+                    val (rsrp, rsrq) = NetworkUtils.getSignalStrengthLegacy(this)
+                    networkRatingText.text = "${rsrp.toInt()} dBm"
+                    
+                    // Color code based on signal strength
+                    val color = when {
+                        rsrp > -90 -> android.R.color.holo_green_dark
+                        rsrp in -110.0..-90.0 -> android.R.color.holo_orange_dark
+                        else -> android.R.color.holo_red_dark
+                    }
+                    networkRatingText.setTextColor(ContextCompat.getColor(this, color))
+                    
+                    android.util.Log.d("DashboardActivity", "Signal strength: ($rsrp, $rsrq)")
+                } catch (e: Exception) {
+                    networkRatingText.text = "Error"
+                    networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark))
+                    android.util.Log.e("DashboardActivity", "Error getting signal strength", e)
+                }
+            } else {
+                networkRatingText.text = "Permission Required"
+                networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
+            }
         } catch (e: Exception) {
             networkStateText.text = "Unknown"
             networkRatingText.text = "Unknown"
+            android.util.Log.e("DashboardActivity", "Error in updateNetworkInfo", e)
         }
     }
     
