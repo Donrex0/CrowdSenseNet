@@ -44,7 +44,9 @@ class DashboardActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_dashboard)
         
-        database = AppDatabase.getDatabase(this)
+        // TODO: Temporarily disabled database for presentation
+        // database = AppDatabase.getDatabase(this)
+        
         initializeViews()
         setupNavigation()
         setupClickListeners()
@@ -156,20 +158,9 @@ class DashboardActivity : AppCompatActivity() {
             }
             networkStateText.text = networkType
             
-            // Get latest measurement for signal strength
-            lifecycleScope.launch {
-                try {
-                    val latestMeasurement = database.measurementDao().getLatestMeasurement()
-                    latestMeasurement?.let { measurement ->
-                        val rating = NetworkUtils.getNetworkRating(measurement.rsrp)
-                        networkRatingText.text = rating.text
-                        networkRatingText.setTextColor(rating.color)
-                    }
-                } catch (e: Exception) {
-                    networkRatingText.text = "No Data"
-                    networkRatingText.setTextColor(ContextCompat.getColor(this@DashboardActivity, android.R.color.darker_gray))
-                }
-            }
+            // Show placeholder for presentation
+            networkRatingText.text = "Sensing Active"
+            networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
         } catch (e: Exception) {
             networkStateText.text = "Unknown"
             networkRatingText.text = "Unknown"
