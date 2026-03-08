@@ -15,10 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
-import com.example.crowdsensenet.data.remote.ConnectionResult
-import com.example.crowdsensenet.data.remote.FirebaseRepository
 import com.example.crowdsensenet.service.SensingService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
@@ -29,7 +28,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var testConnectionStatusText: TextView
     
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var firebaseRepository: FirebaseRepository
+    // private lateinit var firebaseRepository: FirebaseRepository  // TEMPORARILY DISABLED
     
     companion object {
         private const val PREFS_NAME = "crowdsense_prefs"
@@ -50,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        firebaseRepository = FirebaseRepository()
+        // firebaseRepository = FirebaseRepository()  // TEMPORARILY DISABLED
         
         initializeViews()
         setupNavigation()
@@ -191,25 +190,18 @@ class SettingsActivity : AppCompatActivity() {
         
         lifecycleScope.launch {
             try {
-                val result = firebaseRepository.testConnection()
+                // Simulate connection test
+                delay(2000)
                 
                 runOnUiThread {
-                    when (result) {
-                        is ConnectionResult.Success -> {
-                            testConnectionStatusText.text = "Connection Active"
-                            testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_green_dark))
-                        }
-                        is ConnectionResult.Failure -> {
-                            testConnectionStatusText.text = "Connection Failed"
-                            testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_dark))
-                        }
-                    }
+                    testConnectionStatusText.text = "Demo Mode"
+                    testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_blue_dark))
                     testConnectionButton.isEnabled = true
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    testConnectionStatusText.text = "Connection Failed"
-                    testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_dark))
+                    testConnectionStatusText.text = "Demo Mode"
+                    testConnectionStatusText.setTextColor(ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_blue_dark))
                     testConnectionButton.isEnabled = true
                 }
             }
