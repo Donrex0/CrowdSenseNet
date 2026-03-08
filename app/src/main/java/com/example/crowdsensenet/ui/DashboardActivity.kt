@@ -159,10 +159,21 @@ class DashboardActivity : AppCompatActivity() {
             }
             networkStateText.text = networkType
             
-            // Get real signal strength like MetricsActivity
+            // Get signal strength - use last known if sensing is off
             if (hasPhonePermission) {
                 try {
-                    val (rsrp, rsrq) = NetworkUtils.getSignalStrengthLegacy(this)
+                    val (rsrp, rsrq) = if (isSensing) {
+                        // Get real-time data when sensing is on
+                        val signal = NetworkUtils.getSignalStrengthLegacy(this)
+                        // Store last known values
+                        NetworkUtils.setLastKnownSignalStrength(rsrp, rsrq)
+                        NetworkUtils.setLastKnownNetworkType(networkType)
+                        signal
+                    } else {
+                        // Use last known values when sensing is off
+                        NetworkUtils.getLastKnownSignalStrength()
+                    }
+                    
                     networkRatingText.text = "${rsrp.toInt()} dBm"
                     
                     // Color code based on signal strength
@@ -173,7 +184,7 @@ class DashboardActivity : AppCompatActivity() {
                     }
                     networkRatingText.setTextColor(ContextCompat.getColor(this, color))
                     
-                    android.util.Log.d("DashboardActivity", "Signal strength: ($rsrp, $rsrq)")
+                    android.util.Log.d("DashboardActivity", "Signal strength: ($rsrp, $rsrq), Sensing: $isSensing")
                 } catch (e: Exception) {
                     networkRatingText.text = "Error"
                     networkRatingText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark))

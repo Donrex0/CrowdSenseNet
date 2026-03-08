@@ -201,15 +201,59 @@ object NetworkUtils {
         }
         
         // Add realistic variations specific to G-block environment
-        // G-block has good coverage but some building interference
-        val timeVariation = kotlin.math.sin(currentTime / 8000.0) * 2.5 // 8-second cycle (students moving)
-        val buildingInterference = kotlin.math.cos(currentTime / 15000.0) * 1.5 // Building interference
-        val randomVariation = (kotlin.random.Random.nextDouble() - 0.5) * 1.8 // Small random changes
+        // RSRP changes faster (more sensitive to immediate environment)
+        val timeVariationRsrp = kotlin.math.sin(currentTime / 8000.0) * 2.5 // 8-second cycle (students moving)
+        val buildingInterferenceRsrp = kotlin.math.cos(currentTime / 15000.0) * 1.5 // Building interference
+        val randomVariationRsrp = (kotlin.random.Random.nextDouble() - 0.5) * 1.8 // Small random changes
         
-        val rsrp = baseValues.first + timeVariation + buildingInterference + randomVariation
-        val rsrq = baseValues.second + (kotlin.random.Random.nextDouble() - 0.5) * 1.2
+        // RSRQ changes slower (more stable, reflects overall channel quality)
+        val timeVariationRsrq = kotlin.math.sin(currentTime / 20000.0) * 1.2 // 20-second cycle (slower changes)
+        val randomVariationRsrq = (kotlin.random.Random.nextDouble() - 0.5) * 0.8 // Less random variation
+        
+        val rsrp = baseValues.first + timeVariationRsrp + buildingInterferenceRsrp + randomVariationRsrp
+        val rsrq = baseValues.second + timeVariationRsrq + randomVariationRsrq
         
         return Pair(rsrp, rsrq)
+    }
+    
+    // Companion object to store last known values
+    companion object {
+        private var lastKnownSignalStrength: Pair<Double, Double>? = null
+        private var lastKnownLocation: Location? = null
+        private var lastKnownCellInfo: Pair<String, Double>? = null
+        private var lastKnownNetworkType: String? = null
+        
+        fun getLastKnownSignalStrength(): Pair<Double, Double> {
+            return lastKnownSignalStrength ?: Pair(-93.0, -12.0) // G-block default
+        }
+        
+        fun setLastKnownSignalStrength(rsrp: Double, rsrq: Double) {
+            lastKnownSignalStrength = Pair(rsrp, rsrq)
+        }
+        
+        fun getLastKnownLocation(): Location? {
+            return lastKnownLocation
+        }
+        
+        fun setLastKnownLocation(location: Location) {
+            lastKnownLocation = location
+        }
+        
+        fun getLastKnownCellInfo(): Pair<String, Double> {
+            return lastKnownCellInfo ?: Pair("62301123", 45.0) // G-block default
+        }
+        
+        fun setLastKnownCellInfo(cellId: String, pci: Double) {
+            lastKnownCellInfo = Pair(cellId, pci)
+        }
+        
+        fun getLastKnownNetworkType(): String {
+            return lastKnownNetworkType ?: "LTE"
+        }
+        
+        fun setLastKnownNetworkType(networkType: String) {
+            lastKnownNetworkType = networkType
+        }
     }
     
     @SuppressLint("MissingPermission")

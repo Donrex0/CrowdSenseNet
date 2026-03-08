@@ -39,16 +39,15 @@ class MetricsActivity : AppCompatActivity() {
     
     // private lateinit var database: AppDatabase  // TEMPORARILY DISABLED
     private lateinit var map: MapView
+    private var isSensing = false // Track sensing state
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         // Configure OpenStreetMap
-        Configuration.getInstance().userAgentValue = packageName
+        org.osmdroid.config.Configuration.getInstance().userAgentValue = packageName
         
         setContentView(R.layout.activity_metrics)
-        
-        // database = AppDatabase.getDatabase(this)  // TEMPORARILY DISABLED
         initializeViews()
         setupNavigation()
         setupMap()
@@ -218,36 +217,28 @@ class MetricsActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("MetricsActivity", "Error getting network type", e)
-                    "Error: ${e.message}"
+                    if (isSensing) "Unknown" else NetworkUtils.getLastKnownNetworkType()
                 }
                 
-                val (cellId, pci) = try {
-                    if (hasPhonePermission && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                        val cellInfo = com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
-                        android.util.Log.d("MetricsActivity", "Cell info: $cellInfo")
-                        cellInfo
-                    } else {
-                        android.util.Log.d("MetricsActivity", "Using fallback cell info")
-                        Pair("API < 30", 0.0)
-                    }
-                } catch (e: Exception) {
-                    android.util.Log.e("MetricsActivity", "Error getting cell info", e)
-                    Pair("Error: ${e.message}", 0.0)
-                }
-                
-                // Get signal strength - use legacy method for all versions
-                val (rsrp, rsrq) = try {
+                val signal = try {
                     if (hasPhonePermission) {
-                        val signal = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
-                        android.util.Log.d("MetricsActivity", "Signal strength: $signal")
-                        signal
+                        if (isSensing) {
+                            // Get real-time signal when sensing is on
+                            val sig = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
+                            // Store last known values
+                            NetworkUtils.setLastKnownSignalStrength(sig.first, sig.second)
+                            sig
+                        } else {
+                            // Use last known values when sensing is off
+                            NetworkUtils.getLastKnownSignalStrength()
+                        }
                     } else {
                         android.util.Log.d("MetricsActivity", "No phone permission for signal")
-                        Pair(-85.0, -7.0) // Fallback values
+                        if (isSensing) Pair(-85.0, -7.0) else NetworkUtils.getLastKnownSignalStrength()
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("MetricsActivity", "Error getting signal strength", e)
-                    Pair(-85.0, -7.0) // Fallback values
+                    if (isSensing) Pair(-85.0, -7.0) else NetworkUtils.getLastKnownSignalStrength()
                 }
                 
                 // Get location
