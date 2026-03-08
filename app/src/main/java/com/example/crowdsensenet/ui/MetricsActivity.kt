@@ -1,5 +1,6 @@
 package com.example.crowdsensenet.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,6 +10,7 @@ import android.telephony.SignalStrength
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
 // import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
@@ -116,38 +118,77 @@ class MetricsActivity : AppCompatActivity() {
     private fun updateMetricsDisplay() {
         lifecycleScope.launch {
             try {
+                android.util.Log.d("MetricsActivity", "Updating metrics display...")
+                
+                // Check permissions first
+                val hasPhonePermission = android.content.ContextCompat.checkSelfPermission(
+                    this@MetricsActivity, 
+                    Manifest.permission.READ_PHONE_STATE
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                
+                val hasLocationPermission = android.content.ContextCompat.checkSelfPermission(
+                    this@MetricsActivity, 
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                
+                android.util.Log.d("MetricsActivity", "Permissions - Phone: $hasPhonePermission, Location: $hasLocationPermission")
+                
                 // Get real-time network data
                 val networkType = try {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        com.example.crowdsensenet.utils.NetworkUtils.getNetworkType(this@MetricsActivity)
+                    if (hasPhonePermission) {
+                        val type = com.example.crowdsensenet.utils.NetworkUtils.getNetworkType(this@MetricsActivity)
+                        android.util.Log.d("MetricsActivity", "Network type: $type")
+                        type
                     } else {
-                        "Unknown"
+                        android.util.Log.d("MetricsActivity", "No phone permission")
+                        "Permission Required"
                     }
                 } catch (e: Exception) {
-                    "Unknown"
+                    android.util.Log.e("MetricsActivity", "Error getting network type", e)
+                    "Error: ${e.message}"
                 }
                 
                 val (cellId, pci) = try {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                        com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
+                    if (hasPhonePermission && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                        val cellInfo = com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
+                        android.util.Log.d("MetricsActivity", "Cell info: $cellInfo")
+                        cellInfo
                     } else {
-                        Pair("Unknown", 0.0)
+                        android.util.Log.d("MetricsActivity", "Using fallback cell info")
+                        Pair("API < 30", 0.0)
                     }
                 } catch (e: Exception) {
-                    Pair("Unknown", 0.0)
+                    android.util.Log.e("MetricsActivity", "Error getting cell info", e)
+                    Pair("Error: ${e.message}", 0.0)
                 }
                 
                 // Get signal strength - use legacy method for all versions
                 val (rsrp, rsrq) = try {
-                    com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
+                    if (hasPhonePermission) {
+                        val signal = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
+                        android.util.Log.d("MetricsActivity", "Signal strength: $signal")
+                        signal
+                    } else {
+                        android.util.Log.d("MetricsActivity", "No phone permission for signal")
+                        Pair(-85.0, -7.0) // Fallback values
+                    }
                 } catch (e: Exception) {
+                    android.util.Log.e("MetricsActivity", "Error getting signal strength", e)
                     Pair(-85.0, -7.0) // Fallback values
                 }
                 
                 // Get location
                 val location = try {
-                    com.example.crowdsensenet.utils.LocationUtils.getCurrentLocation(this@MetricsActivity)
+                    if (hasLocationPermission) {
+                        val loc = com.example.crowdsensenet.utils.LocationUtils.getCurrentLocation(this@MetricsActivity)
+                        android.util.Log.d("MetricsActivity", "Location: $loc")
+                        loc
+                    } else {
+                        android.util.Log.d("MetricsActivity", "No location permission")
+                        null
+                    }
                 } catch (e: Exception) {
+                    android.util.Log.e("MetricsActivity", "Error getting location", e)
                     null
                 }
                 
@@ -156,8 +197,9 @@ class MetricsActivity : AppCompatActivity() {
                     rsrpValueText.text = "${rsrp.toInt()} dBm"
                     rsrqValueText.text = "${rsrq.toInt()} dB"
                     cellIdText.text = cellId
-                    pciText.text = pci.toInt().toString()
+                    pciText.text = if (pci > 0) pci.toInt().toString() else "N/A"
                     networkTechnologyText.text = networkType
+                    
                     if (location != null) {
                         latitudeText.text = "%.6f".format(location.latitude)
                         longitudeText.text = "%.6f".format(location.longitude)
@@ -171,16 +213,16 @@ class MetricsActivity : AppCompatActivity() {
                 }
                 
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("MetricsActivity", "Error in updateMetricsDisplay", e)
                 // Show fallback values on error
                 runOnUiThread {
-                    rsrpValueText.text = "No Data"
-                    rsrqValueText.text = "No Data"
-                    cellIdText.text = "No Data"
-                    pciText.text = "No Data"
-                    networkTechnologyText.text = "No Data"
-                    latitudeText.text = "No Data"
-                    longitudeText.text = "No Data"
+                    rsrpValueText.text = "Error"
+                    rsrqValueText.text = "Error"
+                    cellIdText.text = "Error"
+                    pciText.text = "Error"
+                    networkTechnologyText.text = "Error"
+                    latitudeText.text = "Error"
+                    longitudeText.text = "Error"
                 }
             }
         }
