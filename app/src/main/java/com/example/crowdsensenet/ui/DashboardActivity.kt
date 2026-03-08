@@ -222,10 +222,14 @@ class DashboardActivity : AppCompatActivity() {
                 location?.let {
                     val currentLocation = GeoPoint(it.latitude, it.longitude)
                     
-                    // Add marker
+                    // Clear existing markers
+                    map.overlays.clear()
+                    
+                    // Add new marker
                     val marker = Marker(map)
                     marker.position = currentLocation
                     marker.title = "Current Location"
+                    marker.subDescription = "Lat: ${it.latitude}, Lon: ${it.longitude}"
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     map.overlays.add(marker)
                     
