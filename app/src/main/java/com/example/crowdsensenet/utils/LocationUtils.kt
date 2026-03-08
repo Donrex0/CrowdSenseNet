@@ -40,16 +40,57 @@ object LocationUtils {
         }
 
         return suspendCancellableCoroutine { cont ->
+            // First try to get last known location
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
-                    cont.resume(location)
+                    if (location != null) {
+                        cont.resume(location)
+                    } else {
+                        // If last location is null, request fresh location
+                        requestFreshLocation(cont)
+                    }
                 }
                 .addOnFailureListener { exception ->
-                    cont.resume(null)
+                    // If last location fails, request fresh location
+                    requestFreshLocation(cont)
                 }
             
             cont.invokeOnCancellation {
                 // Handle cancellation if needed
+            }
+        }
+    }
+    
+    @SuppressLint("MissingPermission")
+    private fun requestFreshLocation(cont: kotlin.coroutines.CancellableContinuation<Location?>) {
+        val locationRequest = LocationRequest.Builder(10000) // 10 seconds timeout
+            .setPriority(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY)
+            .setMaxUpdates(1) // Only need one update
+            .build()
+
+        val callback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    cont.resume(location)
+                } ?: run {
+                    cont.resume(null)
+                }
+                fusedLocationClient.removeLocationUpdates(this)
+            }
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            callback,
+            Looper.getMainLooper()
+        )
+
+        // Timeout after 10 seconds
+        kotlinx.coroutines.GlobalScope.launch {
+            kotlinx.coroutines.delay(10000)
+            if (cont.isActive) {
+                fusedLocationClient.removeLocationUpdates(callback)
+                cont.resume(null)
             }
         }
     }
