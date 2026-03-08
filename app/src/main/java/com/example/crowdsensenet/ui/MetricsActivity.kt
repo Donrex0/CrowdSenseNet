@@ -1,8 +1,11 @@
 package com.example.crowdsensenet.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
@@ -16,6 +19,8 @@ import org.osmdroid.config.Configuration
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class MetricsActivity : AppCompatActivity() {
     
@@ -111,50 +116,107 @@ class MetricsActivity : AppCompatActivity() {
     private fun updateMetricsDisplay() {
         lifecycleScope.launch {
             try {
-                // TEMPORARILY DISABLED - DATABASE ACCESS
-                // val latestMeasurement = database.measurementDao().getLatestMeasurement()
-                
-                // Show placeholder data instead
-                runOnUiThread {
-                    rsrpValueText.text = "-85 dBm"
-                    rsrqValueText.text = "-7 dB"
-                    cellIdText.text = "12345"
-                    pciText.text = "100"
-                    networkTechnologyText.text = "4G LTE"
-                    latitudeText.text = "37.7749"
-                    longitudeText.text = "-122.4194"
+                // Get real-time network data
+                val networkType = try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        com.example.crowdsensenet.utils.NetworkUtils.getNetworkType(this@MetricsActivity)
+                    } else {
+                        "Unknown"
+                    }
+                } catch (e: Exception) {
+                    "Unknown"
                 }
                 
-                // TEMPORARILY DISABLED - MAP UPDATE
-                // if (latestMeasurement != null) {
-                //     updateMapWithMeasurement(latestMeasurement)
-                // }
+                val (cellId, pci) = try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                        com.example.crowdsensenet.utils.NetworkUtils.getCellInfo(this@MetricsActivity)
+                    } else {
+                        Pair("Unknown", 0.0)
+                    }
+                } catch (e: Exception) {
+                    Pair("Unknown", 0.0)
+                }
+                
+                // Get signal strength
+                val (rsrp, rsrq) = try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        // Use modern API for Android 10+
+                        getSignalStrengthModern()
+                    } else {
+                        // Use legacy API for older versions
+                        com.example.crowdsensenet.utils.NetworkUtils.getSignalStrengthLegacy(this@MetricsActivity)
+                    }
+                } catch (e: Exception) {
+                    Pair(-85.0, -7.0) // Fallback values
+                }
+                
+                // Get location
+                val location = try {
+                    com.example.crowdsensenet.utils.LocationUtils.getCurrentLocation(this@MetricsActivity)
+                } catch (e: Exception) {
+                    null
+                }
+                
+                // Update UI with real data
+                runOnUiThread {
+                    rsrpValueText.text = "${rsrp.toInt()} dBm"
+                    rsrqValueText.text = "${rsrq.toInt()} dB"
+                    cellIdText.text = cellId
+                    pciText.text = pci.toInt().toString()
+                    networkTechnologyText.text = networkType
+                    if (location != null) {
+                        latitudeText.text = "%.6f".format(location.latitude)
+                        longitudeText.text = "%.6f".format(location.longitude)
+                        
+                        // Update map with current location
+                        updateMapWithLocation(location.latitude, location.longitude)
+                    } else {
+                        latitudeText.text = "No GPS"
+                        longitudeText.text = "No GPS"
+                    }
+                }
+                
             } catch (e: Exception) {
                 e.printStackTrace()
+                // Show fallback values on error
+                runOnUiThread {
+                    rsrpValueText.text = "No Data"
+                    rsrqValueText.text = "No Data"
+                    cellIdText.text = "No Data"
+                    pciText.text = "No Data"
+                    networkTechnologyText.text = "No Data"
+                    latitudeText.text = "No Data"
+                    longitudeText.text = "No Data"
+                }
             }
         }
     }
     
-    private fun updateMapWithLatestData() {
-        lifecycleScope.launch {
-            try {
-                // TEMPORARILY DISABLED - DATABASE ACCESS
-                // val latestMeasurement = database.measurementDao().getLatestMeasurement()
-                // latestMeasurement?.let { measurement ->
-                //     updateMapWithMeasurement(measurement)
-                // }
-            } catch (e: Exception) {
-                e.printStackTrace()
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun getSignalStrengthModern(): Pair<Double, Double> {
+        return suspendCancellableCoroutine { cont ->
+            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val phoneStateListener = object : TelephonyManager.PhoneStateListener() {
+                override fun onSignalStrengthsChanged(signalStrength: android.telephony.SignalStrength) {
+                    val result = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrength(signalStrength)
+                    cont.resume(result)
+                    telephonyManager.listen(this, TelephonyManager.LISTEN_NONE)
+                }
+            }
+            
+            telephonyManager.listen(phoneStateListener, TelephonyManager.LISTEN_SIGNAL_STRENGTHS)
+            
+            // Handle cancellation
+            cont.invokeOnCancellation {
+                telephonyManager.listen(phoneStateListener, TelephonyManager.LISTEN_NONE)
             }
         }
     }
     
-    // TEMPORARILY DISABLED - MEASUREMENT ENTITY USAGE
-    /*
-    private fun updateMapWithMeasurement(measurement: com.example.crowdsensenet.data.local.MeasurementEntity) {
+    private fun updateMapWithLocation(latitude: Double, longitude: Double) {
         runOnUiThread {
             try {
-                val location = GeoPoint(measurement.latitude, measurement.longitude)
+                val location = GeoPoint(latitude, longitude)
                 
                 // Clear existing markers
                 map.overlays.clear()
@@ -162,8 +224,8 @@ class MetricsActivity : AppCompatActivity() {
                 // Add new marker
                 val marker = Marker(map)
                 marker.position = location
-                marker.title = "Latest Measurement"
-                marker.subDescription = "RSRP: ${measurement.rsrp} dBm\nRSRQ: ${measurement.rsrq} dB\nNetwork: ${measurement.networkTechnology}"
+                marker.title = "Current Location"
+                marker.subDescription = "Lat: $latitude, Lon: $longitude"
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 map.overlays.add(marker)
                 
@@ -174,7 +236,6 @@ class MetricsActivity : AppCompatActivity() {
             }
         }
     }
-    */
     
     override fun onResume() {
         super.onResume()
