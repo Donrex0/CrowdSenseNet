@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.Spinner
 import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,7 +24,7 @@ import kotlinx.coroutines.launch
 class SettingsActivity : AppCompatActivity() {
     
     private lateinit var samplingIntervalSpinner: Spinner
-    private lateinit var backgroundLoggingSwitch: Switch
+    private lateinit var backgroundLoggingSwitch: SwitchCompat
     private lateinit var testConnectionButton: Button
     private lateinit var testConnectionStatusText: TextView
     
