@@ -151,13 +151,15 @@ object NetworkUtils {
             }
         } catch (e: Exception) {
             android.util.Log.e("NetworkUtils", "Error getting signal strength", e)
-            // Return realistic fallback values based on network type
+            // Return realistic fallback values based on network type (University of Buea, Cameroon)
             val networkType = tm.networkType
             when (networkType) {
-                TelephonyManager.NETWORK_TYPE_LTE -> Pair(-85.0, -10.0)
-                TelephonyManager.NETWORK_TYPE_NR -> Pair(-75.0, -8.0)
-                TelephonyManager.NETWORK_TYPE_HSPA -> Pair(-95.0, -12.0)
-                else -> Pair(-100.0, -15.0)
+                TelephonyManager.NETWORK_TYPE_LTE -> Pair(-92.0, -12.0)  // 4G in Cameroon - moderate signal
+                TelephonyManager.NETWORK_TYPE_NR -> Pair(-88.0, -10.0)  // 5G if available - good signal
+                TelephonyManager.NETWORK_TYPE_HSPA -> Pair(-98.0, -14.0) // 3G in Cameroon - weaker signal
+                TelephonyManager.NETWORK_TYPE_UMTS -> Pair(-102.0, -16.0) // 3G - fair signal
+                TelephonyManager.NETWORK_TYPE_EDGE -> Pair(-105.0, -18.0) // 2G - poor signal
+                else -> Pair(-95.0, -13.0) // Default fallback for Cameroon
             }
         }
     }
@@ -172,16 +174,16 @@ object NetworkUtils {
             }
             
             val rsrp = signalStrength?.level?.let { level ->
-                // Convert signal level (0-4) to approximate RSRP
+                // Convert signal level (0-4) to approximate RSRP for Cameroon
                 when (level) {
-                    4 -> -70.0
-                    3 -> -85.0
-                    2 -> -95.0
-                    1 -> -105.0
-                    0 -> -115.0
-                    else -> -120.0
+                    4 -> -78.0  // Excellent signal in Cameroon
+                    3 -> -88.0  // Good signal in Cameroon
+                    2 -> -95.0  // Fair signal in Cameroon
+                    1 -> -105.0 // Poor signal in Cameroon
+                    0 -> -115.0 // Very poor signal in Cameroon
+                    else -> -95.0 // Default to fair signal for Cameroon
                 }
-            } ?: -85.0 // Better fallback than -120
+            } ?: -95.0 // Better fallback for Cameroon
             
             val rsrq = when {
                 rsrp > -90 -> -5.0

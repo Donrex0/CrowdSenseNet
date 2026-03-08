@@ -7,39 +7,20 @@
     android:background="#F8FAFC"
     tools:context=".ui.MetricsActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="72dp">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="72dp">
+        <include layout="@layout/content_metrics" />
 
-            <include layout="@layout/content_metrics" />
-
-        </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_nav"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_gravity="bottom"
-            android:background="@color/white"
-            app:elevation="16dp"
-            app:itemIconSize="24dp"
-            app:itemIconTint="@color/nav_color_selector"
-            app:itemTextColor="@color/nav_color_selector"
-            app:labelVisibilityMode="labeled"
-            app:menu="@menu/bottom_nav_menu" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:elevation="16dp"
@@ -47,7 +28,6 @@
         app:itemIconTint="@color/nav_color_selector"
         app:itemTextColor="@color/nav_color_selector"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"
-        tools:ignore="DuplicateIds" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
