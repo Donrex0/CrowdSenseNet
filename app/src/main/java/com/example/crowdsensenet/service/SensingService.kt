@@ -65,11 +65,16 @@ class SensingService : Service() {
         return START_STICKY
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startSensing() {
         if (isRunning) return
         
-        startForeground(NOTIFICATION_ID, createNotification())
+        val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotification()
+        } else {
+            createNotificationLegacy()
+        }
+        
+        startForeground(NOTIFICATION_ID, notification)
         isRunning = true
         
         sensingJob = CoroutineScope(Dispatchers.IO).launch {
@@ -197,10 +202,21 @@ class SensingService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("CrowdSenseNet")
-            .setContentText("Collecting network measurements...")
-            .setSmallIcon(R.drawable.ic_signal_cellular)
+            .setContentText("Collecting network measurements")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
-            .setSilent(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun createNotificationLegacy(): Notification {
+        return NotificationCompat.Builder(this)
+            .setContentTitle("CrowdSenseNet")
+            .setContentText("Collecting network measurements")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
 
