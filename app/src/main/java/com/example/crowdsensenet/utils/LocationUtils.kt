@@ -69,32 +69,35 @@ object LocationUtils {
         return try {
             val location = Location("simulated")
             
-            // University of Buea coordinates (around G-block area)
-            // Base coordinates: 4.1514° N, 9.2421° E
-            val baseLatitude = 4.1514
-            val baseLongitude = 9.2421
+            // G-block, University of Buea precise coordinates
+            // G-block is located at approximately: 4.1518° N, 9.2425° E
+            val baseLatitude = 4.1518
+            val baseLongitude = 9.2425
             
             val currentTime = System.currentTimeMillis()
             
-            // Add realistic walking movement around the campus
-            val timeVariation = currentTime / 30000.0 // 30 second cycle
-            val latitudeVariation = kotlin.math.sin(timeVariation) * 0.0005 // ~50m variation
-            val longitudeVariation = kotlin.math.cos(timeVariation * 0.7) * 0.0005 // ~50m variation
+            // Add realistic walking movement around G-block specifically
+            val timeVariation = currentTime / 25000.0 // 25 second cycle around G-block
+            val latitudeVariation = kotlin.math.sin(timeVariation) * 0.0003 // ~30m variation within G-block
+            val longitudeVariation = kotlin.math.cos(timeVariation * 0.8) * 0.0003 // ~30m variation within G-block
             
-            // Add small random variations for realism
-            val randomLatVariation = (kotlin.random.Random.nextDouble() - 0.5) * 0.0001
-            val randomLonVariation = (kotlin.random.Random.nextDouble() - 0.5) * 0.0001
+            // Add small random variations for realism (student movement within G-block)
+            val randomLatVariation = (kotlin.random.Random.nextDouble() - 0.5) * 0.00005 // ~5m random movement
+            val randomLonVariation = (kotlin.random.Random.nextDouble() - 0.5) * 0.00005 // ~5m random movement
             
             location.latitude = baseLatitude + latitudeVariation + randomLatVariation
             location.longitude = baseLongitude + longitudeVariation + randomLonVariation
-            location.accuracy = 5.0f + kotlin.random.Random.nextFloat() * 10.0f // 5-15m accuracy
-            location.altitude = 500.0 + (kotlin.random.Random.nextDouble() - 0.5) * 50.0 // ~500m altitude
-            location.speed = kotlin.random.Random.nextFloat() * 3.0f // 0-3 m/s walking speed
+            location.accuracy = 3.0f + kotlin.random.Random.nextFloat() * 7.0f // 3-10m accuracy (good GPS in campus)
+            location.altitude = 520.0 + (kotlin.random.Random.nextDouble() - 0.5) * 30.0 // ~520m altitude (Buea elevation)
+            location.speed = kotlin.random.Random.nextFloat() * 2.0f // 0-2 m/s (walking speed in G-block)
             location.time = currentTime
+            
+            // Add location provider info for realism
+            location.provider = "fused"
             
             location
         } catch (e: Exception) {
-            android.util.Log.e("LocationUtils", "Error creating simulated location", e)
+            android.util.Log.e("LocationUtils", "Error creating simulated location for G-block", e)
             null
         }
     }

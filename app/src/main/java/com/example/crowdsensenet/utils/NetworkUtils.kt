@@ -97,22 +97,31 @@ object NetworkUtils {
     }
     
     private fun getRealisticSimulatedCellId(): String {
-        // Simulate realistic cell IDs for Cameroon networks (MTN, Orange, Camtel)
+        // Simulate realistic cell IDs for G-block, University of Buea area networks
         val currentTime = System.currentTimeMillis()
-        val cellIdBase = when ((currentTime / 10000) % 3) {
-            0L -> "62301" // MTN Cameroon
-            1L -> "62401" // Orange Cameroon
-            else -> "62402" // Camtel
+        val cellIdBase = when ((currentTime / 12000) % 4) {
+            0L -> "62301" // MTN Cameroon (Buea area)
+            1L -> "62401" // Orange Cameroon (Buea area)  
+            2L -> "62402" // Camtel (Buea area)
+            else -> "62302" // MTN Cameroon (G-block specific)
         }
-        val variation = ((currentTime / 5000) % 999).toInt()
+        // Add variation for different cell sectors around G-block
+        val variation = ((currentTime / 6000) % 999).toInt()
         return "$cellIdBase$variation"
     }
     
     private fun getRealisticSimulatedCellInfo(): Double {
-        // Simulate realistic PCI values (0-503 for LTE)
+        // Simulate realistic PCI values for G-block area cell towers (0-503 for LTE)
         val currentTime = System.currentTimeMillis()
-        val basePci = ((currentTime / 15000) % 504).toInt()
-        val variation = ((currentTime / 3000) % 10) - 5 // ±5 variation
+        // Different cell towers around G-block have different PCI values
+        val basePci = when ((currentTime / 20000) % 5) {
+            0L -> 45   // MTN tower near G-block
+            1L -> 127  // Orange tower near G-block
+            2L -> 233  // Camtel tower near G-block
+            3L -> 89   // Backup MTN tower
+            else -> 312 // Secondary Orange tower
+        }
+        val variation = ((currentTime / 4000) % 8) - 4 // ±4 variation (signal handover)
         return (basePci + variation).coerceIn(0, 503).toDouble()
     }
 
@@ -181,22 +190,24 @@ object NetworkUtils {
         val networkType = tm.networkType
         val currentTime = System.currentTimeMillis()
         
-        // Create realistic variations based on time and network type
+        // Create realistic variations based on G-block, University of Buea specific conditions
         val baseValues = when (networkType) {
-            TelephonyManager.NETWORK_TYPE_LTE -> Pair(-92.0, -12.0)  // 4G in Cameroon
-            TelephonyManager.NETWORK_TYPE_NR -> Pair(-88.0, -10.0)  // 5G if available
-            TelephonyManager.NETWORK_TYPE_HSPA -> Pair(-98.0, -14.0) // 3G in Cameroon
-            TelephonyManager.NETWORK_TYPE_UMTS -> Pair(-102.0, -16.0) // 3G
-            TelephonyManager.NETWORK_TYPE_EDGE -> Pair(-105.0, -18.0) // 2G
-            else -> Pair(-95.0, -13.0) // Default for Cameroon
+            TelephonyManager.NETWORK_TYPE_LTE -> Pair(-90.0, -11.0)  // 4G at G-block (better than general Cameroon)
+            TelephonyManager.NETWORK_TYPE_NR -> Pair(-85.0, -9.0)   // 5G if available at G-block
+            TelephonyManager.NETWORK_TYPE_HSPA -> Pair(-96.0, -13.0) // 3G at G-block
+            TelephonyManager.NETWORK_TYPE_UMTS -> Pair(-100.0, -15.0) // 3G at G-block
+            TelephonyManager.NETWORK_TYPE_EDGE -> Pair(-103.0, -17.0) // 2G at G-block
+            else -> Pair(-93.0, -12.0) // Default for G-block area
         }
         
-        // Add realistic variations (±3 dBm for RSRP, ±2 for RSRQ)
-        val timeVariation = kotlin.math.sin(currentTime / 10000.0) * 3.0 // Slow variation over time
-        val randomVariation = (kotlin.random.Random.nextDouble() - 0.5) * 2.0 // Small random changes
+        // Add realistic variations specific to G-block environment
+        // G-block has good coverage but some building interference
+        val timeVariation = kotlin.math.sin(currentTime / 8000.0) * 2.5 // 8-second cycle (students moving)
+        val buildingInterference = kotlin.math.cos(currentTime / 15000.0) * 1.5 // Building interference
+        val randomVariation = (kotlin.random.Random.nextDouble() - 0.5) * 1.8 // Small random changes
         
-        val rsrp = baseValues.first + timeVariation + randomVariation
-        val rsrq = baseValues.second + (kotlin.random.Random.nextDouble() - 0.5) * 1.5
+        val rsrp = baseValues.first + timeVariation + buildingInterference + randomVariation
+        val rsrq = baseValues.second + (kotlin.random.Random.nextDouble() - 0.5) * 1.2
         
         return Pair(rsrp, rsrq)
     }
