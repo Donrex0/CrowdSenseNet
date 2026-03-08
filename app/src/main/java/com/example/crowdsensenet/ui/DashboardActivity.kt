@@ -25,7 +25,8 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 
 class DashboardActivity : AppCompatActivity() {
     
-    private lateinit var startSensingButton: Button
+    private lateinit var startSensingButton: LinearLayout
+    private lateinit var startSensingButtonText: TextView
     private lateinit var sensingStateText: TextView
     private lateinit var networkStateText: TextView
     private lateinit var networkRatingText: TextView
@@ -54,6 +55,7 @@ class DashboardActivity : AppCompatActivity() {
     
     private fun initializeViews() {
         startSensingButton = findViewById(R.id.start_sensing_button)
+        startSensingButtonText = startSensingButton.findViewById(R.id.start_sensing_button_text)
         sensingStateText = findViewById(R.id.sensing_state)
         networkStateText = findViewById(R.id.network_state)
         networkRatingText = findViewById(R.id.network_rating)
@@ -107,7 +109,7 @@ class DashboardActivity : AppCompatActivity() {
         ContextCompat.startForegroundService(this, intent)
         
         isSensing = true
-        startSensingButton.text = "Stop Sensing"
+        startSensingButtonText.text = "Stop Sensing"
         sensingStateText.text = "ON"
         sensingStateText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
     }
@@ -120,7 +122,7 @@ class DashboardActivity : AppCompatActivity() {
         startService(intent)
         
         isSensing = false
-        startSensingButton.text = "Start Sensing"
+        startSensingButtonText.text = "Start Sensing"
         sensingStateText.text = "OFF"
         sensingStateText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark))
     }
