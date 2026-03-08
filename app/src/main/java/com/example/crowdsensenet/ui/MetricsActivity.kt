@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
-import android.telephony.TelephonyManager.PhoneStateListener
 import android.telephony.SignalStrength
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -197,19 +196,19 @@ class MetricsActivity : AppCompatActivity() {
     private suspend fun getSignalStrengthModern(): Pair<Double, Double> {
         return suspendCancellableCoroutine { cont ->
             val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val phoneStateListener = object : PhoneStateListener() {
+            val phoneStateListener = object : TelephonyManager.PhoneStateListener() {
                 override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
                     val result = com.example.crowdsensenet.utils.NetworkUtils.getSignalStrength(signalStrength)
                     cont.resume(result)
-                    telephonyManager.listen(this, PhoneStateListener.LISTEN_NONE)
+                    telephonyManager.listen(this, TelephonyManager.PhoneStateListener.LISTEN_NONE)
                 }
             }
             
-            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
+            telephonyManager.listen(phoneStateListener, TelephonyManager.PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
             
             // Handle cancellation
             cont.invokeOnCancellation {
-                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
+                telephonyManager.listen(phoneStateListener, TelephonyManager.PhoneStateListener.LISTEN_NONE)
             }
         }
     }
