@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.crowdsensenet.data.local.AppDatabase
+// import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.data.remote.FirebaseRepository
 import com.example.crowdsensenet.data.remote.UploadResult
 import kotlinx.coroutines.flow.first
@@ -14,13 +14,16 @@ class UploadWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-    private val database = AppDatabase.getDatabase(applicationContext)
-    private val measurementDao = database.measurementDao()
+    // TEMPORARILY DISABLED DATABASE ACCESS
+    // private val database = AppDatabase.getDatabase(applicationContext)
+    // private val measurementDao = database.measurementDao()
     private val firebaseRepository = FirebaseRepository()
 
     override suspend fun doWork(): Result {
         return try {
-            val pendingMeasurements = measurementDao.getPendingMeasurements()
+            // TEMPORARILY DISABLED - NO DATABASE ACCESS
+            // val pendingMeasurements = measurementDao.getPendingMeasurements()
+            val pendingMeasurements = emptyList<com.example.crowdsensenet.data.local.MeasurementEntity>() // Placeholder
             
             if (pendingMeasurements.isEmpty()) {
                 return Result.success()
@@ -37,10 +40,10 @@ class UploadWorker(
                 when (val result = firebaseRepository.uploadBatch(batch)) {
                     is UploadResult.Success -> {
                         uploadedCount += result.count
-                        // Mark as uploaded in local database
-                        batch.forEach { measurement ->
-                            measurementDao.markAsUploaded(measurement.id)
-                        }
+                        // TEMPORARILY DISABLED - Mark as uploaded in local database
+                        // batch.forEach { measurement ->
+                        //     measurementDao.markAsUploaded(measurement.id)
+                        // }
                     }
                     is UploadResult.Failure -> {
                         failedCount += batch.size

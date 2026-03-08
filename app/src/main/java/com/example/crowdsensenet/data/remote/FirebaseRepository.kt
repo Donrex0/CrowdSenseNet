@@ -1,6 +1,6 @@
 package com.example.crowdsensenet.data.remote
 
-import com.example.crowdsensenet.data.local.MeasurementEntity
+// import com.example.crowdsensenet.data.local.MeasurementEntity  // TEMPORARILY DISABLED
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -10,6 +10,8 @@ class FirebaseRepository {
     private val firestore = FirebaseFirestore.getInstance()
     private val collection = "measurements"
 
+    // TEMPORARILY DISABLED - MEASUREMENT ENTITY USAGE
+    /*
     suspend fun uploadMeasurement(measurement: MeasurementEntity): Result<String> {
         return try {
             val data = hashMapOf(
@@ -32,7 +34,10 @@ class FirebaseRepository {
             Result.failure(e)
         }
     }
+    */
 
+    // TEMPORARILY DISABLED - MEASUREMENT ENTITY USAGE
+    /*
     suspend fun uploadBatch(measurements: List<MeasurementEntity>): UploadResult {
         return try {
             var successCount = 0
@@ -64,6 +69,7 @@ class FirebaseRepository {
             UploadResult.Failure(e.message ?: "Upload failed")
         }
     }
+    */
 
     suspend fun testConnection(): ConnectionResult {
         return try {

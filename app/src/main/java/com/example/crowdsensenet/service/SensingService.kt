@@ -19,8 +19,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.crowdsensenet.R
-import com.example.crowdsensenet.data.local.AppDatabase
-import com.example.crowdsensenet.data.local.MeasurementEntity
+// import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
+// import com.example.crowdsensenet.data.local.MeasurementEntity  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.utils.LocationUtils
 import com.example.crowdsensenet.utils.NetworkUtils
 import kotlinx.coroutines.*
@@ -29,7 +29,7 @@ import kotlin.coroutines.resume
 class SensingService : Service() {
 
     private lateinit var telephonyManager: TelephonyManager
-    private lateinit var database: AppDatabase
+    // private lateinit var database: AppDatabase  // TEMPORARILY DISABLED
     private var isRunning = false
     private var sensingJob: Job? = null
     private var samplingIntervalMs = 5000L // Default 5 seconds
@@ -45,7 +45,7 @@ class SensingService : Service() {
     override fun onCreate() {
         super.onCreate()
         telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        database = AppDatabase.getDatabase(this)
+        // database = AppDatabase.getDatabase(this)  // TEMPORARILY DISABLED
         LocationUtils.initialize(this)
     }
 
@@ -122,7 +122,8 @@ class SensingService : Service() {
         // Get location
         val location = LocationUtils.getCurrentLocation(this)
         
-        // Create measurement entity
+        // TEMPORARILY DISABLED - Create measurement entity
+        /*
         val measurement = MeasurementEntity(
             deviceId = getDeviceIdentifier(),
             timestamp = System.currentTimeMillis(),
@@ -135,9 +136,10 @@ class SensingService : Service() {
             longitude = location?.longitude ?: 0.0,
             isUploaded = false
         )
+        */
         
-        // Save to database
-        database.measurementDao().insert(measurement)
+        // TEMPORARILY DISABLED - Save to database
+        // database.measurementDao().insert(measurement)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.crowdsensenet.R
-import com.example.crowdsensenet.data.local.AppDatabase
+// import com.example.crowdsensenet.data.local.AppDatabase  // TEMPORARILY DISABLED
 import com.example.crowdsensenet.data.remote.SyncManager
 import com.example.crowdsensenet.service.UploadWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,13 +36,10 @@ class UploadsActivity : AppCompatActivity() {
     private lateinit var uploadSuccessLayout: LinearLayout
     private lateinit var uploadSuccessTimestamp: TextView
     
-    private lateinit var database: AppDatabase
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uploads)
         
-        database = AppDatabase.getDatabase(this)
         initializeViews()
         setupNavigation()
         setupClickListeners()
@@ -105,7 +102,9 @@ class UploadsActivity : AppCompatActivity() {
         
         lifecycleScope.launch {
             try {
-                val uploadedCount = database.measurementDao().getUploadedCount()
+                // TEMPORARILY DISABLED - DATABASE ACCESS
+                // val uploadedCount = database.measurementDao().getUploadedCount()
+                val uploadedCount = 0 // Placeholder
                 val timestamp = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
                     .format(Date())
                 lastFullBackupTimestamp.text = "Last upload: $timestamp ($uploadedCount records)"
@@ -136,8 +135,9 @@ class UploadsActivity : AppCompatActivity() {
     private fun monitorUploadProgress() {
         lifecycleScope.launch {
             try {
-                // Check if there are pending uploads
-                val pendingCount = database.measurementDao().getPendingCount()
+                // TEMPORARILY DISABLED - DATABASE ACCESS
+                // val pendingCount = database.measurementDao().getPendingCount()
+                val pendingCount = 0 // Placeholder
                 
                 if (pendingCount == 0) {
                     showUploadSuccess(0)
@@ -203,8 +203,11 @@ class UploadsActivity : AppCompatActivity() {
     private fun updateUploadCounts() {
         lifecycleScope.launch {
             try {
-                val pendingCount = database.measurementDao().getPendingCount()
-                val uploadedCount = database.measurementDao().getUploadedCount()
+                // TEMPORARILY DISABLED - DATABASE ACCESS
+                // val pendingCount = database.measurementDao().getPendingCount()
+                // val uploadedCount = database.measurementDao().getUploadedCount()
+                val pendingCount = 0 // Placeholder
+                val uploadedCount = 0 // Placeholder
                 
                 runOnUiThread {
                     pendingUploadsText.text = pendingCount.toString()
